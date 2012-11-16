@@ -1,5 +1,5 @@
 /*
- * Pronto Plugin [jQuery + CMS push state integration; Based on pjax and turbolinks]
+ * Pronto Plugin
  * @author Ben Plum
  * @version 0.2
  *
