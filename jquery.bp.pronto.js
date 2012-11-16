@@ -1,7 +1,7 @@
 /*
  * Pronto Plugin [jQuery + CMS push state integration; Based on pjax and turbolinks]
  * @author Ben Plum
- * @version 0.1
+ * @version 0.2
  *
  * Copyright © 2012 Ben Plum <mr@benplum.com>
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
@@ -108,9 +108,9 @@ if (jQuery) (function($) {
 		
 		// Update DOM
 		document.title = response.title.replace(/&nbsp;/g, " ");
-		options.$container.trigger("pronto.onLoad")
+		options.$container.trigger("pronto.load")
 						  .html(response.content)
-						  .trigger("pronto.onRender");
+						  .trigger("pronto.render");
 		
 		// Push new states to the stack
 		if (doPush) {
