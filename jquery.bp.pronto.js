@@ -1,7 +1,7 @@
 /*
  * Pronto Plugin
  * @author Ben Plum
- * @version 0.2
+ * @version 0.3
  *
  * Copyright © 2012 Ben Plum <mr@benplum.com>
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
@@ -11,6 +11,8 @@ if (jQuery) (function($) {
 	
 	var supported = window.history && window.history.pushState && window.history.replaceState;
 	// && !navigator.userAgent.match(/((iPod|iPhone|iPad).+\bOS\s+[1-4]|WebApps\/.+CFNetwork)/);
+	
+	var $window = $(window);
 	
 	// Default Options
 	var options = {
@@ -48,7 +50,7 @@ if (jQuery) (function($) {
 		}, "state-"+window.location.href, window.location.href);
 		
 		// Bind state events
-		$(window).on("popstate", _onPop);
+		$window.on("popstate", _onPop);
 		
 		options.$body.on("click.pronto", options.selector, _click);
 	}
@@ -68,12 +70,12 @@ if (jQuery) (function($) {
 		e.preventDefault();
 		e.stopPropagation();
 		
-		_load(link.href);
+		_request(link.href);
 	}
 	
-	// Load new url
-	function _load(url) {
-		options.$container.trigger("pronto.beforeLoad");
+	// Request new url
+	function _request(url) {
+		$window.trigger("pronto.request");
 		
 		// Call new content
 		$.ajax({
@@ -101,16 +103,16 @@ if (jQuery) (function($) {
 	// Render HTML
 	function _render(url, response, doPush) {
 		// Reset scrollbar
-		$(window).scrollTop(0);
+		$window.scrollTop(0);
 		
 		// Trigger analytics page view
 		_gaCaptureView(url);
 		
 		// Update DOM
 		document.title = response.title.replace(/&nbsp;/g, " ");
-		options.$container.trigger("pronto.load")
-						  .html(response.content)
-						  .trigger("pronto.render");
+		$window.trigger("pronto.load");
+		options.$container.html(response.content);
+		$window.trigger("pronto.render");
 		
 		// Push new states to the stack
 		if (doPush) {
