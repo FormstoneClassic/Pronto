@@ -1,7 +1,7 @@
 /*
  * Pronto Plugin
  * @author Ben Plum
- * @version 0.3
+ * @version 0.3.1
  *
  * Copyright © 2012 Ben Plum <mr@benplum.com>
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
@@ -124,7 +124,7 @@ if (jQuery) (function($) {
 	
 	// Google Analytics support
 	function _gaCaptureView(url) {
-		if (typeof _gaq == undefined) _gaq = [];
+		if (typeof _gaq === "undefined") _gaq = [];
 		_gaq.push(['_trackPageview'], url);
 	}
 	
