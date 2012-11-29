@@ -1,7 +1,7 @@
 /*
  * Pronto Plugin
  * @author Ben Plum
- * @version 0.3.1
+ * @version 0.4
  *
  * Copyright © 2012 Ben Plum <mr@benplum.com>
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
@@ -60,8 +60,8 @@ if (jQuery) (function($) {
 		
 		// Ignore everything but normal click
 		if (  (e.which > 1 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey)
-		   || (location.protocol !== link.protocol || location.host !== link.host)
-		   || (link.hash && link.href.replace(link.hash, '') === location.href.replace(location.hash, '') || link.href === location.href + '#')
+		   || (window.location.protocol !== link.protocol || window.location.host !== link.host)
+		   || (link.hash && link.href.replace(link.hash, '') === window.location.href.replace(location.hash, '') || link.href === window.location.href + '#')
 		   ) {
 			return;
 		}
@@ -78,7 +78,7 @@ if (jQuery) (function($) {
 		
 		// Call new content
 		$.ajax({
-			url: url + (url.indexOf("?") ? "?pronto=true" : "&pronto=true"),
+			url: url + ((url.indexOf("?") > -1) ? "?pronto=true" : "&pronto=true"),
 			dataType: "json",
 			success: function(response) {
 				_render(url, response, true);
@@ -92,9 +92,9 @@ if (jQuery) (function($) {
 	// Handle back button
 	function _onPop(e) {
 		var data = e.originalEvent.state;
-				
+		
 		// Check if data exists
-		if (data !== null) {
+		if (data !== null && (data.url !== window.location.href)) {
 			_render(data.url, data.data, false);
 		}
 	}
@@ -102,16 +102,15 @@ if (jQuery) (function($) {
 	// Render HTML
 	function _render(url, response, doPush) {
 		// Reset scrollbar
-		$window.scrollTop(0);
+		$window.trigger("pronto.load")
+			   .scrollTop(0);
 		
 		// Trigger analytics page view
 		_gaCaptureView(url);
 		
 		// Update DOM
 		document.title = response.title.replace(/&nbsp;/g, " ");
-		$window.trigger("pronto.load");
 		options.$container.html(response.content);
-		$window.trigger("pronto.render");
 		
 		// Push new states to the stack
 		if (doPush) {
@@ -120,6 +119,8 @@ if (jQuery) (function($) {
 				data: response
 			}, "state-"+url, url);
 		}
+		
+		$window.trigger("pronto.render");
 	}
 	
 	// Google Analytics support
