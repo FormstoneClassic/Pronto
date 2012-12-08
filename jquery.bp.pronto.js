@@ -1,7 +1,7 @@
 /*
  * Pronto Plugin
  * @author Ben Plum
- * @version 0.4
+ * @version 0.5
  *
  * Copyright © 2012 Ben Plum <mr@benplum.com>
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
@@ -13,6 +13,8 @@ if (jQuery) (function($) {
 	
 	var $window = $(window);
 	
+	var currentURL = '';
+	
 	// Default Options
 	var options = {
 		container: "#pronto",
@@ -23,7 +25,7 @@ if (jQuery) (function($) {
 	var pub = {
 		
 		supported: function() {
-			return supported
+			return supported;
 		}
 	};
 	
@@ -47,6 +49,8 @@ if (jQuery) (function($) {
 				"content": $(options.container).html()
 			}
 		}, "state-"+window.location.href, window.location.href);
+		
+		currentURL = window.location.href;
 		
 		// Bind state events
 		$window.on("popstate", _onPop);
@@ -94,7 +98,7 @@ if (jQuery) (function($) {
 		var data = e.originalEvent.state;
 		
 		// Check if data exists
-		if (data !== null && (data.url !== window.location.href)) {
+		if (data !== null && (data.url !== currentURL)) {
 			_render(data.url, data.data, false);
 		}
 	}
@@ -119,6 +123,8 @@ if (jQuery) (function($) {
 				data: response
 			}, "state-"+url, url);
 		}
+		
+		currentURL = url;
 		
 		$window.trigger("pronto.render");
 	}
