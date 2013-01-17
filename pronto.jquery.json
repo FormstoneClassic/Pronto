@@ -13,13 +13,6 @@
 		"name": "Ben Plum",
 		"url": "http://www.benplum.com"
 	},
-	"maintainers": [
-		{
-			"name": "Ben Plum",
-			"email": "mr@benplum.com",
-			"url": "http://www.benplum.com"
-		}
-	],
 	"licenses": [
 		{
 			"type": "MIT",
