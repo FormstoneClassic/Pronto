@@ -7,9 +7,10 @@
 		"speed",
 		"ajax",
 		"html5",
-		"utility"
+		"utility",
+		"benplum"
 	],
-	"version": "0.5.0",
+	"version": "0.5.1",
 	"author": {
 		"name": "Ben Plum",
 		"url": "http://www.benplum.com"
