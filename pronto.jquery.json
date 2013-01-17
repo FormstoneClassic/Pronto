@@ -23,13 +23,12 @@
 	"licenses": [
 		{
 			"type": "MIT",
-			"url": "http://www.opensource.org/licenses/mit-license.phpt"
+			"url": "http://www.opensource.org/licenses/mit-license.php"
 		}
 	],
-	"bugs": "https://github.com/benplum/Pronto/issues",
-	"homepage": "http://www.benplum.com/projects/pronto/",
 	"docs": "http://www.benplum.com/projects/pronto/",
 	"download": "https://github.com/benplum/Pronto",
+	"bugs": "https://github.com/benplum/Pronto/issues",
 	"dependencies": {
 		"jquery": ">=1.7"
 	}
