@@ -1,7 +1,7 @@
 /*
  * Pronto Plugin
  * @author Ben Plum
- * @version 0.5.1
+ * @version 0.5.2
  *
  * Copyright © 2012 Ben Plum <mr@benplum.com>
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
@@ -113,7 +113,7 @@ if (jQuery) (function($) {
 		_gaCaptureView(url);
 		
 		// Update DOM
-		document.title = response.title.replace(/&nbsp;/g, " ");
+		document.title = _unescapeHTML(response.title);
 		options.$container.html(response.content);
 		
 		// Push new states to the stack
@@ -127,6 +127,15 @@ if (jQuery) (function($) {
 		currentURL = url;
 		
 		$window.trigger("pronto.render");
+	}
+	
+	function _unescapeHTML(unsafe) {
+		return unsafe.replace(/&lt;/g, "<")
+					 .replace(/&gt;/g, ">")
+					 .replace(/&nbsp;/g, " ")
+					 .replace(/&amp;/g, "&")
+					 .replace(/&quot;/g, '"')
+					 .replace(/&#039;/g, "'");
 	}
 	
 	// Google Analytics support
