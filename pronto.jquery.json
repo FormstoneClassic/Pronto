@@ -22,6 +22,7 @@
 		}
 	],
 	"docs": "http://www.benplum.com/projects/pronto/",
+	"demo": "http://www.benplum.com/projects/pronto/",
 	"download": "https://github.com/benplum/Pronto",
 	"bugs": "https://github.com/benplum/Pronto/issues",
 	"dependencies": {
