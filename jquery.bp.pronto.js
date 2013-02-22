@@ -1,7 +1,7 @@
 /*
  * Pronto Plugin
  * @author Ben Plum
- * @version 0.5.2
+ * @version 0.5.3
  *
  * Copyright © 2012 Ben Plum <mr@benplum.com>
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
@@ -82,7 +82,7 @@ if (jQuery) (function($) {
 		
 		// Call new content
 		$.ajax({
-			url: url + ((url.indexOf("?") > -1) ? "?pronto=true" : "&pronto=true"),
+			url: url + ((url.indexOf("?") > -1) ? "&pronto=true" : "?pronto=true"),
 			dataType: "json",
 			success: function(response) {
 				_render(url, response, true);
