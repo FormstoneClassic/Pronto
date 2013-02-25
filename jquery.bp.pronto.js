@@ -1,7 +1,7 @@
 /*
  * Pronto Plugin
  * @author Ben Plum
- * @version 0.5.3
+ * @version 0.5.4-1
  *
  * Copyright © 2012 Ben Plum <mr@benplum.com>
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
@@ -114,7 +114,14 @@ if (jQuery) (function($) {
 		
 		// Update DOM
 		document.title = _unescapeHTML(response.title);
-		options.$container.html(response.content);
+		
+		if (typeof response.content == "Object") {
+			for (var id in response.content) {
+				$("#" + id).html(response.content[id]);
+			}
+		} else {
+			options.$container.html(response.content);
+		}
 		
 		// Push new states to the stack
 		if (doPush) {
