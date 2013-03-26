@@ -85,7 +85,7 @@ if (jQuery) (function($) {
 			url: url + ((url.indexOf("?") > -1) ? "&pronto=true" : "?pronto=true"),
 			dataType: "json",
 			success: function(response) {
-				_render(url, response, true);
+				_render(url, $.parseJSON(response), true);
 			},
 			error: function(response) {
 				window.location.href = url;
