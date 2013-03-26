@@ -1,7 +1,7 @@
 /*
  * Pronto Plugin
  * @author Ben Plum
- * @version 0.5.4-1
+ * @version 0.5.4
  *
  * Copyright © 2013 Ben Plum <mr@benplum.com>
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
