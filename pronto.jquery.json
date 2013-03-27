@@ -6,11 +6,13 @@
 		"performance",
 		"speed",
 		"ajax",
+		"pushState",
+		"popState",
+		"history",
 		"html5",
-		"utility",
 		"benplum"
 	],
-	"version": "0.5.2",
+	"version": "0.6.0",
 	"author": {
 		"name": "Ben Plum",
 		"url": "http://www.benplum.com"

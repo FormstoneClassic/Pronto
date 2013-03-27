@@ -1,24 +1,28 @@
 /*
  * Pronto Plugin
  * @author Ben Plum
- * @version 0.5.3
+ * @version 0.6.0
  *
- * Copyright © 2012 Ben Plum <mr@benplum.com>
+ * Copyright © 2013 Ben Plum <mr@benplum.com>
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
  
 if (jQuery) (function($) {
 	
-	var supported = window.history && window.history.pushState && window.history.replaceState;
-	
-	var $window = $(window);
-	
-	var currentURL = '';
+	var $window = $(window),
+		supported = window.history && window.history.pushState && window.history.replaceState,
+		currentURL = '',
+		currentGUID = 0,
+		totalStates = 0;
 	
 	// Default Options
 	var options = {
-		container: "#pronto",
-		selector: "a"
+		selector: "a",
+		requestKey: "pronto",
+		target: { 
+			title: "title", 
+			content: "#pronto"
+		} //key is JSON key, value is HTML selector
 	};
 	
 	// Public Methods
@@ -42,15 +46,12 @@ if (jQuery) (function($) {
 			return;
 		}
 		
-		history.replaceState({
-			url: window.location.href,
-			data: {
-				"title": $("head").find("title").text(),
-				"content": $(options.container).html()
-			}
-		}, "state-"+window.location.href, window.location.href);
-		
+		// Capture current url & state
 		currentURL = window.location.href;
+		currentGUID = 0;
+		
+		// Set initial state
+		_saveState();
 		
 		// Bind state events
 		$window.on("popstate", _onPop);
@@ -65,8 +66,13 @@ if (jQuery) (function($) {
 		// Ignore everything but normal click
 		if (  (e.which > 1 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey)
 		   || (window.location.protocol !== link.protocol || window.location.host !== link.host)
-		   || (link.hash && link.href.replace(link.hash, '') === window.location.href.replace(location.hash, '') || link.href === window.location.href + '#')
 		   ) {
+			return;
+		}
+		
+		// Update state on hash change
+		if (currentURL == link.href || link.hash && link.href.replace(link.hash, '') === window.location.href.replace(location.hash, '') || link.href === window.location.href + '#') {
+			_saveState();
 			return;
 		}
 		
@@ -78,14 +84,19 @@ if (jQuery) (function($) {
 	
 	// Request new url
 	function _request(url) {
+		// Fire request event
 		$window.trigger("pronto.request");
 		
-		// Call new content
+		// Request new content
 		$.ajax({
-			url: url + ((url.indexOf("?") > -1) ? "&pronto=true" : "?pronto=true"),
+			url: url + ((url.indexOf("?") > -1) ? "&"+options.requestKey+"=true" : "?"+options.requestKey+"=true"),
 			dataType: "json",
 			success: function(response) {
-				_render(url, $.parseJSON(response), true);
+				if (typeof response == "String") {
+					response = $.parseJSON(response);
+				}
+				_render(url, response, 0, currentGUID+1);
+				totalStates++;
 			},
 			error: function(response) {
 				window.location.href = url;
@@ -93,42 +104,76 @@ if (jQuery) (function($) {
 		});
 	}
 	
-	// Handle back button
+	// Handle back/forward navigation
 	function _onPop(e) {
 		var data = e.originalEvent.state;
 		
 		// Check if data exists
-		if (data !== null && (data.url !== currentURL)) {
-			_render(data.url, data.data, false);
+		if (data !== null && data.url !== currentURL) {
+			_render(data.url, data.data, data.scroll, data.guid);
 		}
 	}
 	
 	// Render HTML
-	function _render(url, response, doPush) {
-		// Reset scrollbar
-		$window.trigger("pronto.load")
-			   .scrollTop(0);
+	function _render(url, response, scrollTop, guid) {
+		// Fire load event
+		$window.trigger("pronto.load");
 		
 		// Trigger analytics page view
 		_gaCaptureView(url);
 		
-		// Update DOM
-		document.title = _unescapeHTML(response.title);
-		options.$container.html(response.content);
+		// Update current state
+		_saveState();
 		
-		// Push new states to the stack
-		if (doPush) {
-			history.pushState({
-				url: url,
-				data: response
-			}, "state-"+url, url);
+		// Update DOM
+		for (var key in options.target) {
+			if (response.hasOwnProperty(key)) {
+				$(options.target[key]).html(response[key]);
+			}
 		}
 		
+		// Update current url & guid
 		currentURL = url;
+		currentGUID = guid;
 		
+		// Push new states to the stack on new url
+		if (guid > totalStates) {
+			history.pushState({
+				guid: currentGUID,
+				url: currentURL,
+				data: response,
+				scroll: 0
+			}, "state-"+currentURL, currentURL);
+		} else {
+			// Set state if moving back/forward
+			_saveState();
+		}
+		
+		// Fire render event
 		$window.trigger("pronto.render");
+		
+		//Set Scroll position
+		$window.scrollTop(scrollTop);
 	}
 	
+	// Save current state
+	function _saveState() {
+		// Save data in object before history
+		var stateObj = []; 
+		for (var key in options.target) {
+			stateObj[key] = $(options.target[key]).html();
+		}
+		
+		// Update state
+		history.replaceState({
+			guid: currentGUID,
+			url: currentURL,
+			data: stateObj,
+			scroll: $window.scrollTop()
+		}, "state-"+currentURL, currentURL);
+	}
+	
+	// Unescape Utility
 	function _unescapeHTML(unsafe) {
 		return unsafe.replace(/&lt;/g, "<")
 					 .replace(/&gt;/g, ">")
