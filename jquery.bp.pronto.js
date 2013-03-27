@@ -17,8 +17,9 @@ if (jQuery) (function($) {
 	
 	// Default Options
 	var options = {
-		container: "#pronto",
-		selector: "a"
+		selector: "a",
+		ajax_key: "pronto",
+		container: { title : 'title', content : '#content'}, //key is JSON key, value is HTML selector
 	};
 	
 	// Public Methods
@@ -36,18 +37,29 @@ if (jQuery) (function($) {
 		$.extend(options, opts || {});
 		options.$body = $("body");
 		options.$container = $(options.container);
+		options.$ajax_key = $(options.ajax_key);
 		
 		// Check for push/pop support
 		if (!supported) {
 			return;
 		}
 		
+		//Save data in object before history
+		var jsonObj = []; 
+		$.each(options.$container, function(key, value){
+		    $.each(value, function(key, value){
+			if(key=='title'){
+				jsonObj["title"] = $("head").find("title").text();
+			} else {
+				jsonObj[key] = $(value).html();
+			}
+		    });
+		});
+
+		//Push history
 		history.replaceState({
 			url: window.location.href,
-			data: {
-				"title": $("head").find("title").text(),
-				"content": $(options.container).html()
-			}
+			data: jsonObj
 		}, "state-"+window.location.href, window.location.href);
 		
 		currentURL = window.location.href;
@@ -82,13 +94,15 @@ if (jQuery) (function($) {
 		
 		// Call new content
 		$.ajax({
-			url: url + ((url.indexOf("?") > -1) ? "&pronto=true" : "?pronto=true"),
+			url: url + ((url.indexOf("?") > -1) ? "&"+options.ajax_key+"=true" : "?"+options.ajax_key+"=true"),
 			dataType: "json",
 			success: function(response) {
+				response = $.parseJSON(response);
 				_render(url, response, true);
 			},
 			error: function(response) {
-				window.location.href = url;
+				//window.location.href = url;
+				console.log(response);
 			}
 		});
 	}
@@ -113,8 +127,18 @@ if (jQuery) (function($) {
 		_gaCaptureView(url);
 		
 		// Update DOM
-		document.title = _unescapeHTML(response.title);
-		options.$container.html(response.content);
+		$.each(options.$container, function(key, value){
+		    $.each(value, function(key, value){
+			if(response.hasOwnProperty(key))
+			{
+				if(key=='title'){
+					document.title = _unescapeHTML(response[key]);
+				} else {
+					$(value).html(response[key]);
+				}
+			}
+		    });
+		});
 		
 		// Push new states to the stack
 		if (doPush) {
