@@ -17,8 +17,11 @@ if (jQuery) (function($) {
 	
 	// Default Options
 	var options = {
-		container: "#pronto",
-		selector: "a"
+		selector: "a",
+		ajax_key: "pronto",
+		csrf_key: 'csrf',
+		csrf_token: '',
+		container: { title : 'title', content : '#content'}, //key is JSON key, value is HTML selector
 	};
 	
 	// Public Methods
@@ -36,6 +39,9 @@ if (jQuery) (function($) {
 		$.extend(options, opts || {});
 		options.$body = $("body");
 		options.$container = $(options.container);
+		options.$ajax_key = $(options.ajax_key);
+		options.$csrf_key = $(options.csrf_key);
+		options.$csrf_token = $(options.csrf_token);
 		
 		// Check for push/pop support
 		if (!supported) {
@@ -80,12 +86,16 @@ if (jQuery) (function($) {
 	function _request(url) {
 		$window.trigger("pronto.request");
 		
+		//Set CSRF value
+		var csrf = (options.csrf_token.length>0 ? '&'+options.csrf_key+'='+options.csrf_token : "");
+
 		// Call new content
 		$.ajax({
-			url: url + ((url.indexOf("?") > -1) ? "&pronto=true" : "?pronto=true"),
+			url: url + ((url.indexOf("?") > -1) ? "&"+options.ajax_key+"=true" : "?"+options.ajax_key+"=true") + csrf,
 			dataType: "json",
 			success: function(response) {
-				_render(url, $.parseJSON(response), true);
+				response = $.parseJSON(response);
+				_render(url, response, true);
 			},
 			error: function(response) {
 				window.location.href = url;
