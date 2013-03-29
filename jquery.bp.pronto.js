@@ -1,7 +1,7 @@
 /*
  * Pronto Plugin
  * @author Ben Plum
- * @version 0.6.0
+ * @version 0.6.1
  *
  * Copyright © 2013 Ben Plum <mr@benplum.com>
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
@@ -12,7 +12,6 @@ if (jQuery) (function($) {
 	var $window = $(window),
 		supported = window.history && window.history.pushState && window.history.replaceState,
 		currentURL = '',
-		currentGUID = 0,
 		totalStates = 0;
 	
 	// Default Options
@@ -48,7 +47,6 @@ if (jQuery) (function($) {
 		
 		// Capture current url & state
 		currentURL = window.location.href;
-		currentGUID = 0;
 		
 		// Set initial state
 		_saveState();
@@ -95,7 +93,7 @@ if (jQuery) (function($) {
 				if (typeof response == "String") {
 					response = $.parseJSON(response);
 				}
-				_render(url, response, 0, currentGUID+1);
+				_render(url, response, 0, true);
 				totalStates++;
 			},
 			error: function(response) {
@@ -110,12 +108,12 @@ if (jQuery) (function($) {
 		
 		// Check if data exists
 		if (data !== null && data.url !== currentURL) {
-			_render(data.url, data.data, data.scroll, data.guid);
+			_render(data.url, data.data, data.scroll, false);
 		}
 	}
 	
 	// Render HTML
-	function _render(url, response, scrollTop, guid) {
+	function _render(url, response, scrollTop, doPush) {
 		// Fire load event
 		$window.trigger("pronto.load");
 		
@@ -132,14 +130,12 @@ if (jQuery) (function($) {
 			}
 		}
 		
-		// Update current url & guid
+		// Update current url
 		currentURL = url;
-		currentGUID = guid;
 		
 		// Push new states to the stack on new url
-		if (guid > totalStates) {
+		if (doPush) {
 			history.pushState({
-				guid: currentGUID,
 				url: currentURL,
 				data: response,
 				scroll: 0
@@ -166,7 +162,6 @@ if (jQuery) (function($) {
 		
 		// Update state
 		history.replaceState({
-			guid: currentGUID,
 			url: currentURL,
 			data: stateObj,
 			scroll: $window.scrollTop()
