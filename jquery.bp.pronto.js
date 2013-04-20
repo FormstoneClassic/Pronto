@@ -1,7 +1,7 @@
 /*
  * Pronto Plugin
  * @author Ben Plum
- * @version 0.6.2
+ * @version 0.6.3
  *
  * Copyright © 2013 Ben Plum <mr@benplum.com>
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
@@ -71,7 +71,7 @@ if (jQuery) (function($) {
 		}
 		
 		// Update state on hash change
-		if (currentURL == link.href || link.hash && link.href.replace(link.hash, '') === window.location.href.replace(location.hash, '') || link.href === window.location.href + '#') {
+		if (link.hash && link.href.replace(link.hash, '') === window.location.href.replace(location.hash, '') || link.href === window.location.href + '#') {
 			_saveState();
 			return;
 		}
@@ -79,7 +79,11 @@ if (jQuery) (function($) {
 		e.preventDefault();
 		e.stopPropagation();
 		
-		_request(link.href);
+		if (currentURL == link.href) {
+			_saveState();
+		} else {
+			_request(link.href);
+		}
 	}
 	
 	// Request new url
