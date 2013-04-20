@@ -1,7 +1,7 @@
 /*
  * Pronto Plugin
  * @author Ben Plum
- * @version 0.6.1
+ * @version 0.6.2
  *
  * Copyright © 2013 Ben Plum <mr@benplum.com>
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
@@ -12,12 +12,14 @@ if (jQuery) (function($) {
 	var $window = $(window),
 		supported = window.history && window.history.pushState && window.history.replaceState,
 		currentURL = '',
-		totalStates = 0;
+		totalStates = 0,
+		requestTimer = null;
 	
 	// Default Options
 	var options = {
 		selector: "a",
 		requestKey: "pronto",
+		requestDelay: 0,
 		target: { 
 			title: "title", 
 			content: "#pronto"
@@ -108,12 +110,25 @@ if (jQuery) (function($) {
 		
 		// Check if data exists
 		if (data !== null && data.url !== currentURL) {
+			// Fire request event
+			$window.trigger("pronto.request");
+			
 			_render(data.url, data.data, data.scroll, false);
 		}
 	}
 	
-	// Render HTML
 	function _render(url, response, scrollTop, doPush) {
+		if (requestTimer !== null) {
+			clearTimeout(requestTimer);
+			requestTimer = null;
+		}
+		requestTimer = setTimeout(function() {
+			_doRender(url, response, scrollTop, doPush)
+		}, options.requestDelay);
+	}
+	
+	// Render HTML
+	function _doRender(url, response, scrollTop, doPush) {
 		// Fire load event
 		$window.trigger("pronto.load");
 		
@@ -180,7 +195,7 @@ if (jQuery) (function($) {
 	
 	// Google Analytics support
 	function _gaCaptureView(url) {
-		if (typeof _gaq === "undefined") _gaq = [];
+		var _gaq = _gaq || [];
 		_gaq.push(['_trackPageview'], url);
 	}
 	
