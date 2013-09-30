@@ -1,7 +1,7 @@
 /*
  * Pronto Plugin
  * @author Ben Plum
- * @version 0.7.0
+ * @version 0.7.1
  *
  * Copyright © 2013 Ben Plum <mr@benplum.com>
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
@@ -45,8 +45,6 @@ if (jQuery) (function($) {
 	
 	// Init 
 	function _init(opts) {
-		console.log("INIT");
-		
 		$.extend(options, opts || {});
 		options.$body = $("body");
 		options.$container = $(options.container);
