@@ -1,7 +1,7 @@
 /*
  * Pronto Plugin
  * @author Ben Plum
- * @version 0.6.3
+ * @version 0.7.0
  *
  * Copyright © 2013 Ben Plum <mr@benplum.com>
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
@@ -23,11 +23,18 @@ if (jQuery) (function($) {
 		target: { 
 			title: "title", 
 			content: "#pronto"
-		} //key is JSON key, value is HTML selector
+		} //key is JSON key, value is target HTML selector
 	};
 	
 	// Public Methods
 	var pub = {
+		
+		open: function(url) {
+			if (url) {
+				_request(url);
+			}
+			return;
+		},
 		
 		supported: function() {
 			return supported;
@@ -38,6 +45,8 @@ if (jQuery) (function($) {
 	
 	// Init 
 	function _init(opts) {
+		console.log("INIT");
+		
 		$.extend(options, opts || {});
 		options.$body = $("body");
 		options.$container = $(options.container);
@@ -61,7 +70,7 @@ if (jQuery) (function($) {
 	
 	// Handle link clicks 
 	function _click(e) {
-		var link = e.currentTarget;
+		var url = e.currentTarget;
 		
 		// Ignore everything but normal click
 		if (  (e.which > 1 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey)
@@ -71,7 +80,7 @@ if (jQuery) (function($) {
 		}
 		
 		// Update state on hash change
-		if (link.hash && link.href.replace(link.hash, '') === window.location.href.replace(location.hash, '') || link.href === window.location.href + '#') {
+		if (url.hash && url.href.replace(url.hash, '') === window.location.href.replace(location.hash, '') || url.href === window.location.href + '#') {
 			_saveState();
 			return;
 		}
@@ -79,10 +88,10 @@ if (jQuery) (function($) {
 		e.preventDefault();
 		e.stopPropagation();
 		
-		if (currentURL == link.href) {
+		if (currentURL == url.href) {
 			_saveState();
 		} else {
-			_request(link.href);
+			_request(url.href);
 		}
 	}
 	
