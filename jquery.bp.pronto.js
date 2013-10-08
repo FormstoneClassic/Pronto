@@ -1,7 +1,7 @@
 /*
  * Pronto Plugin
  * @author Ben Plum
- * @version 0.7.1
+ * @version 0.7.2
  *
  * Copyright © 2013 Ben Plum <mr@benplum.com>
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
@@ -72,7 +72,7 @@ if (jQuery) (function($) {
 		
 		// Ignore everything but normal click
 		if (  (e.which > 1 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey)
-		   || (window.location.protocol !== link.protocol || window.location.host !== link.host)
+		   || (window.location.protocol !== url.protocol || window.location.host !== url.host)
 		   ) {
 			return;
 		}
