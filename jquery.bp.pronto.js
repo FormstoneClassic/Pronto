@@ -1,7 +1,7 @@
 /*
  * Pronto Plugin
  * @author Ben Plum
- * @version 0.7.2
+ * @version 0.7.3
  *
  * Copyright © 2013 Ben Plum <mr@benplum.com>
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
@@ -30,7 +30,9 @@ if (jQuery) (function($) {
 	var pub = {
 		
 		open: function(url) {
-			if (url) {
+			if (!supported) {
+				window.location.href = url;
+			} else if (url) {
 				_request(url);
 			}
 			return;
