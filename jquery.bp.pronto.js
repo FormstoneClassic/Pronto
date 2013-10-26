@@ -1,7 +1,7 @@
 /*
  * Pronto Plugin
  * @author Ben Plum
- * @version 0.8.0
+ * @version 0.8.1
  *
  * Copyright © 2013 Ben Plum <mr@benplum.com>
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
@@ -17,7 +17,7 @@ if (jQuery) (function($) {
 	
 	// Default Options
 	var options = {
-		onRender: _render,
+		render: _render,
 		selector: "a",
 		requestKey: "pronto",
 		requestDelay: 0,
@@ -153,7 +153,7 @@ if (jQuery) (function($) {
 		// Update current state
 		_saveState();
 		
-		options.onRender.call(this, response);
+		options.render.call(this, response);
 		
 		// Update current url
 		currentURL = url;
