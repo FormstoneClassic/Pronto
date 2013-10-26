@@ -1,7 +1,7 @@
 /*
  * Pronto Plugin
  * @author Ben Plum
- * @version 0.8.1
+ * @version 0.8.2
  *
  * Copyright © 2013 Ben Plum <mr@benplum.com>
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
@@ -17,8 +17,9 @@ if (jQuery) (function($) {
 	
 	// Default Options
 	var options = {
-		render: _render,
+		forceRequests: false,
 		selector: "a",
+		render: _render,
 		requestKey: "pronto",
 		requestDelay: 0,
 		target: { 
@@ -97,7 +98,7 @@ if (jQuery) (function($) {
 	}
 	
 	// Request new url
-	function _request(url) {
+	function _request(url, scrollTop, doPush) {
 		// Fire request event
 		$window.trigger("pronto.request");
 		
@@ -109,7 +110,7 @@ if (jQuery) (function($) {
 				if (typeof response == "String") {
 					response = $.parseJSON(response);
 				}
-				_process(url, response, 0, true);
+				_process(url, response, (typeof scrollTop !== "undefined") ? scrollTop : true, (typeof doPush !== "undefined") ? doPush : true);
 				totalStates++;
 			},
 			error: function(response) {
@@ -124,10 +125,14 @@ if (jQuery) (function($) {
 		
 		// Check if data exists
 		if (data !== null && data.url !== currentURL) {
-			// Fire request event
-			$window.trigger("pronto.request");
-			
-			_process(data.url, data.data, data.scroll, false);
+			if (options.forceRequests) {
+				_request(data.url, data.scroll, false);
+			} else {
+				// Fire request event
+				$window.trigger("pronto.request");
+				
+				_process(data.url, data.data, data.scroll, false);
+			}
 		}
 	}
 	
