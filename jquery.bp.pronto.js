@@ -1,7 +1,7 @@
 /*
  * Pronto Plugin
  * @author Ben Plum
- * @version 0.7.3
+ * @version 0.8.0
  *
  * Copyright © 2013 Ben Plum <mr@benplum.com>
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
@@ -17,6 +17,7 @@ if (jQuery) (function($) {
 	
 	// Default Options
 	var options = {
+		onRender: _render,
 		selector: "a",
 		requestKey: "pronto",
 		requestDelay: 0,
@@ -108,7 +109,7 @@ if (jQuery) (function($) {
 				if (typeof response == "String") {
 					response = $.parseJSON(response);
 				}
-				_render(url, response, 0, true);
+				_process(url, response, 0, true);
 				totalStates++;
 			},
 			error: function(response) {
@@ -126,22 +127,23 @@ if (jQuery) (function($) {
 			// Fire request event
 			$window.trigger("pronto.request");
 			
-			_render(data.url, data.data, data.scroll, false);
+			_process(data.url, data.data, data.scroll, false);
 		}
 	}
 	
-	function _render(url, response, scrollTop, doPush) {
+	// Process Timer
+	function _process(url, response, scrollTop, doPush) {
 		if (requestTimer !== null) {
 			clearTimeout(requestTimer);
 			requestTimer = null;
 		}
 		requestTimer = setTimeout(function() {
-			_doRender(url, response, scrollTop, doPush)
+			_doProcess(url, response, scrollTop, doPush)
 		}, options.requestDelay);
 	}
 	
-	// Render HTML
-	function _doRender(url, response, scrollTop, doPush) {
+	// Process Response
+	function _doProcess(url, response, scrollTop, doPush) {
 		// Fire load event
 		$window.trigger("pronto.load");
 		
@@ -151,12 +153,7 @@ if (jQuery) (function($) {
 		// Update current state
 		_saveState();
 		
-		// Update DOM
-		for (var key in options.target) {
-			if (response.hasOwnProperty(key)) {
-				$(options.target[key]).html(response[key]);
-			}
-		}
+		options.onRender.call(this, response);
 		
 		// Update current url
 		currentURL = url;
@@ -178,6 +175,18 @@ if (jQuery) (function($) {
 		
 		//Set Scroll position
 		$window.scrollTop(scrollTop);
+	}
+	
+	// Internal DOM rendering
+	function _render(response) {
+		// Update DOM
+		if (typeof response != "undefined") {
+			for (var key in options.target) {
+				if (response.hasOwnProperty(key)) {
+					$(options.target[key]).html(response[key]);
+				}
+			}
+		}
 	}
 	
 	// Save current state

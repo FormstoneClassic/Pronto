@@ -1,6 +1,6 @@
 {
 	"name": "Pronto",
-	"version": "0.7.3",
+	"version": "0.8.0",
 	"description": "A jQuery plugin for faster page loads.",
 	"keywords": [
 		"javascript",
