@@ -1,7 +1,7 @@
 /*
  * Pronto Plugin
  * @author Ben Plum
- * @version 0.8.2
+ * @version 0.8.3
  *
  * Copyright © 2013 Ben Plum <mr@benplum.com>
  * Released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
@@ -155,13 +155,13 @@ if (jQuery) (function($) {
 		// Trigger analytics page view
 		_gaCaptureView(url);
 		
+		// Update current url
+		currentURL = url;
+		
 		// Update current state
 		_saveState();
 		
 		options.render.call(this, response);
-		
-		// Update current url
-		currentURL = url;
 		
 		// Push new states to the stack on new url
 		if (doPush) {
@@ -170,9 +170,6 @@ if (jQuery) (function($) {
 				data: response,
 				scroll: 0
 			}, "state-"+currentURL, currentURL);
-		} else {
-			// Set state if moving back/forward
-			_saveState();
 		}
 		
 		// Fire render event
