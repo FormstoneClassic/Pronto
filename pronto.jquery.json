@@ -1,33 +1,38 @@
 {
-	"name": "pronto",
-	"title": "Pronto",
-	"description": "A jQuery plugin for faster page loads.",
-	"keywords": [
-		"performance",
-		"speed",
-		"ajax",
-		"pushState",
-		"popState",
-		"history",
-		"html5",
-		"benplum"
-	],
-	"version": "0.8.3",
-	"author": {
-		"name": "Ben Plum",
-		"url": "http://www.benplum.com"
-	},
-	"licenses": [
-		{
-			"type": "MIT",
-			"url": "http://www.opensource.org/licenses/mit-license.php"
-		}
-	],
-	"docs": "http://www.benplum.com/projects/pronto/",
-	"demo": "http://www.benplum.com/projects/pronto/",
-	"download": "https://github.com/benplum/Pronto",
-	"bugs": "https://github.com/benplum/Pronto/issues",
-	"dependencies": {
-		"jquery": ">=1.7"
-	}
+  "name": "pronto",
+  "version": "3.0.0",
+  "title": "Pronto",
+  "author": {
+    "name": "Ben Plum",
+    "email": "mr@benplum.com",
+    "url": "http://www.benplum.com"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://opensource.org/licenses/MIT"
+    }
+  ],
+  "dependencies": {
+    "jquery": ">=1.7"
+  },
+  "description": "A jQuery plugin for faster page loads. Part of the formstone library.",
+  "keywords": [
+    "performance",
+    "speed",
+    "ajax",
+    "pushState",
+    "popState",
+    "history",
+    "html5",
+    "javascript",
+    "jquery",
+    "formstone",
+    "benplum"
+  ],
+  "docs": "http://formstone.it/pronto/",
+  "demo": "http://formstone.it/pronto/",
+  "download": "https://github.com/benplum/Pronto",
+  "bugs": "https://github.com/benplum/Pronto/issues",
+  "homepage": "http://formstone.it/pronto/"
 }
