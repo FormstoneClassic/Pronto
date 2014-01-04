@@ -161,7 +161,7 @@
 				scrollTop = (typeof scrollTop !== "undefined") ? scrollTop : 0;
 				doPush    = (typeof doPush !== "undefined") ? doPush : true;
 				
-				//_process(url, response, scrollTop, doPush);
+				_process(url, response, scrollTop, doPush);
 			},
 			error: function(response) {
 				window.location.href = url;
