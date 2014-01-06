@@ -1,5 +1,5 @@
 /* 
- * Pronto v3.0.1 - 2014-01-04 
+ * Pronto v3.0.1 - 2014-01-06 
  * A jQuery plugin for faster page loads. Part of the formstone library. 
  * http://formstone.it/pronto/ 
  * 
@@ -26,7 +26,7 @@
 	 * @param selecter [string] <'a'> "Selecter to target in the DOM"
 	 * @param render [function] <$.noop> "Custom render function"
 	 * @param requestKey [string] <'boxer'> "GET variable for requests"
-	 * @param target [object] <'{ title: 'title', content: '#pronto' }'> "Key / value pair for rendering responses (key is response key, value is target selector)"
+	 * @param target [object] <{ title: 'title', content: '#pronto' }> "Key / value pair for rendering responses (key is response key, value is target selector)"
 	 */
 	var options = {
 		force: false,
@@ -38,6 +38,13 @@
 			content: "#pronto"
 		}
 	};
+	
+	/**
+	 * @events
+	 * @event request.pronto "Before request is made; triggered on window"
+	 * @event request.load "After request is loaded; triggered on window"
+	 * @event request.render "After state is rendered; triggered on window"
+	 */
 	
 	var pub = {
 		
@@ -58,7 +65,7 @@
 		 * @name load
 		 * @description Loads new page 
 		 * @param opts [url] <''> "URL to load"
-		 * @example $.pronto("open", "http://website.com/page/");
+		 * @example $.pronto("load", "http://website.com/page/");
 		 */
 		load: function(url) {
 			if (!navtiveSupport) {
