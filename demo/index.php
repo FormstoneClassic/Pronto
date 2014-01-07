@@ -35,12 +35,26 @@
 		</script>
 	</head>
 	<body class="gridlock demo">
-		<h1>Site Title</h1>
-		<nav>
-			<a href="index.php">Home</a>
-			<a href="about.php">About</a>
-		</nav>
-		<div id="pronto">
+		<header id="header">
+			<div class="row">
+				<div class="all-full">
+					<a href="http://formstone.it/" class="branding">Formstone</a>
+				</div>
+			</div>
+		</header>
+		<article class="row page">
+			<div class="mobile-full tablet-full desktop-8 desktop-push-2">
+				<header class="header">
+					<h1>Pronto Demo</h1>
+					<!-- <p>A technical demonstration of the jQuery plugin.</p> -->
+					<br />
+					<a href="http://formstone.it/pronto/" class="button">View Documentation</a>
+				</header>
+				<nav>
+					<a href="index.php">Home</a>
+					<a href="about.php">About</a>
+				</nav>
+				<div id="pronto">
 <?
 	}
 	// END: Only output on full page loads
@@ -74,7 +88,9 @@
 	// Only output on full page loads
 	if (!$isPronto) {
 ?>	
-		</div>	
+				</div>
+			</div>
+		</article>
 	</body>
 </html>
 <?

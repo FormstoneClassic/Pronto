@@ -27,8 +27,8 @@
 	/**
 	 * @events
 	 * @event request.pronto "Before request is made; triggered on window"
-	 * @event request.load "After request is loaded; triggered on window"
-	 * @event request.render "After state is rendered; triggered on window"
+	 * @event load.pronto "After request is loaded; triggered on window"
+	 * @event render.pronto "After state is rendered; triggered on window"
 	 */
 	
 	var pub = {
