@@ -1,5 +1,5 @@
 /* 
- * Pronto v3.0.1 - 2014-01-06 
+ * Pronto v3.0.2 - 2014-01-06 
  * A jQuery plugin for faster page loads. Part of the formstone library. 
  * http://formstone.it/pronto/ 
  * 
@@ -10,7 +10,7 @@
  * @plugin 
  * @name Pronto 
  * @description A jQuery plugin for faster page loads. Part of the formstone library. 
- * @version 3.0.1 
+ * @version 3.0.2 
  */ 
 
 ;(function ($, window) {
@@ -294,7 +294,7 @@
 	 */
 	function _gaCaptureView(url) {
 		var _gaq = _gaq || [];
-		_gaq.push(['_trackPageview'], url);
+		_gaq.push(["_trackPageview", url]);
 	}
 	
 	$.pronto = function(method) {

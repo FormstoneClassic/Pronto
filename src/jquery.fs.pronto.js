@@ -279,7 +279,7 @@
 	 */
 	function _gaCaptureView(url) {
 		var _gaq = _gaq || [];
-		_gaq.push(['_trackPageview'], url);
+		_gaq.push(["_trackPageview", url]);
 	}
 	
 	$.pronto = function(method) {
