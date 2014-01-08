@@ -1,6 +1,8 @@
 ;(function ($, window) {
 	"use strict";
 	
+	/* global ga */ 
+	
 	var $window = $(window),
 		navtiveSupport = window.history && window.history.pushState && window.history.replaceState,
 		currentURL = '';
@@ -12,6 +14,10 @@
 	 * @param render [function] <$.noop> "Custom render function"
 	 * @param requestKey [string] <'boxer'> "GET variable for requests"
 	 * @param target [object] <{ title: 'title', content: '#pronto' }> "Key / value pair for rendering responses (key is response key, value is target selector)"
+	 * @param tracking.legacy [boolean] <false> "Flag for legacy Google Analytics tracking"
+	 * @param tracking.manager [boolean] <false> "Flag for Tag Manager tracking"
+	 * @param tracking.variable [string] <'currentURL'> "Tag Manager dataLayer variable name (macro in Tag Manager)"
+	 * @param tracking.event [string] <'PageView'> "Tag Manager event name (rule in Tag Manager)"
 	 */
 	var options = {
 		force: false,
@@ -21,14 +27,20 @@
 		target: { 
 			title: "title", 
 			content: "#pronto"
+		},
+		tracking: {
+			legacy: false, // Use legacy ga code
+			manager: false, // Use tag manager events
+			variable: 'currentURL', // data layer variable name - macro in tag manager
+			event: 'PageView' // event name - rule in tag manager
 		}
 	};
 	
 	/**
 	 * @events
 	 * @event request.pronto "Before request is made; triggered on window"
-	 * @event load.pronto "After request is loaded; triggered on window"
-	 * @event render.pronto "After state is rendered; triggered on window"
+	 * @event request.load "After request is loaded; triggered on window"
+	 * @event request.render "After state is rendered; triggered on window"
 	 */
 	
 	var pub = {
@@ -190,7 +202,7 @@
 		$window.trigger("load.pronto");
 		
 		// Trigger analytics page view
-		_gaCaptureView(url);
+		_track(url);
 		
 		// Update current state before rendering new state
 		_saveState();
@@ -273,13 +285,39 @@
 	
 	/**
 	 * @method private
-	 * @name _gaCaptureView
-	 * @description Pushes a page view to the Google Analytics (_gaq) object
+	 * @name _track
+	 * @description Pushes new page view to the Google Analytics (Legacy or Universal)
 	 * @param url [string] "URL to track"
 	 */
-	function _gaCaptureView(url) {
-		var _gaq = _gaq || [];
-		_gaq.push(["_trackPageview", url]);
+	function _track(url) {
+		// Strip domain
+		url = url.replace(window.location.protocol + "//" + window.location.host, "");
+		
+		if (options.tracking.legacy) {
+			// Legacy Analytics
+			var _gaq = _gaq || [];
+			_gaq.push(["_trackPageview", url]);
+		} else {
+			// Universal Analytics
+			if (options.tracking.manager && options.tracking.variable && options.tracking.event) {
+				// Tag Manager
+				// Push new url to varibale then tracking event
+				var dataLayer = dataLayer || [],
+					page = {};
+				
+				page[options.tracking.variable] = url;
+				
+				dataLayer.push(page);
+				dataLayer.push({ 'event': options.tracking.event });
+			} else {
+				// Simply send page view
+				if (typeof ga === "function") {
+					ga('send', 'pageview', {
+						'page': url
+					});
+				}
+			}
+		}
 	}
 	
 	$.pronto = function(method) {
