@@ -1,6 +1,6 @@
 {
   "name": "Pronto",
-  "version": "3.0.4",
+  "version": "3.0.4-1",
   "description": "A jQuery plugin for faster page loads. Part of the formstone library.",
   "keywords": [
     "javascript",
@@ -20,7 +20,8 @@
     "jquery.bp.pronto.min.js"
   ],
   "ignore": [
-    "*.json"
+    "*.json",
+    "Gruntfile.js"
   ],
   "dependencies": {
     "jquery": ">= 1.7.0"

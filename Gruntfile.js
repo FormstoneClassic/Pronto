@@ -97,7 +97,7 @@ module.exports = function(grunt) {
 		sync: {
 			all: {
 				options: {
-					sync: [ 'name', 'version', 'description', 'author', 'license', 'homepage' ]
+					sync: [ 'name', 'version', 'description', 'author', 'license', 'homepage', 'ignore' ]
 				}
 			}
 		}

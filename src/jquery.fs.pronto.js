@@ -39,8 +39,8 @@
 	/**
 	 * @events
 	 * @event request.pronto "Before request is made; triggered on window"
-	 * @event request.load "After request is loaded; triggered on window"
-	 * @event request.render "After state is rendered; triggered on window"
+	 * @event load.pronto "After request is loaded; triggered on window"
+	 * @event render.pronto "After state is rendered; triggered on window"
 	 */
 	
 	var pub = {
@@ -313,6 +313,10 @@
 				if (typeof ga === "function") {
 					ga('send', 'pageview', url);
 				}
+				
+				// Specific tracker - only needed if using mutiple and/or tag manager
+				//var t = ga.getAll(); 
+				//ga(t[0].get('name')+'.send', 'pageview', '/mimeo/');
 			}
 		}
 	}
