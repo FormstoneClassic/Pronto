@@ -86,10 +86,10 @@
 			return;
 		}
 		
-		$.extend(options, opts || {});
+		$.extend(true, options, opts || {});
+		
 		options.$body = $("body");
 		options.$container = $(options.container);
-		
 		if (options.render === $.noop) {
 			options.render = _renderState;
 		}
@@ -295,26 +295,23 @@
 		
 		if (options.tracking.legacy) {
 			// Legacy Analytics
-			var _gaq = _gaq || [];
-			_gaq.push(["_trackPageview", url]);
+			window._gaq = window._gaq || [];
+			window._gaq.push(["_trackPageview", url]);
 		} else {
 			// Universal Analytics
-			if (options.tracking.manager && options.tracking.variable && options.tracking.event) {
+			if (options.tracking.manager) {
 				// Tag Manager
-				// Push new url to varibale then tracking event
-				var dataLayer = dataLayer || [],
-					page = {};
-				
+				var page = {};
 				page[options.tracking.variable] = url;
+				window.dataLayer = window.dataLayer || [];
 				
-				dataLayer.push(page);
-				dataLayer.push({ 'event': options.tracking.event });
+				// Push new url to varibale then tracking event
+				window.dataLayer.push(page);
+				window.dataLayer.push({ 'event': options.tracking.event });
 			} else {
-				// Simply send page view
+				// Basic
 				if (typeof ga === "function") {
-					ga('send', 'pageview', {
-						'page': url
-					});
+					ga('send', 'pageview', url);
 				}
 			}
 		}
@@ -328,4 +325,4 @@
 		}
 		return this;
 	};
-})(jQuery, window);
+})(jQuery, this);
