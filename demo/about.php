@@ -14,15 +14,12 @@
     	
 		<title><?=$page_title?></title>
 		
-		<link href="http://fonts.googleapis.com/css?family=Lato:300,400,900" rel="stylesheet" type="text/css" media="all" />
-		<link href="http://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet" type="text/css">
 		<link href="http://formstone.it/css/demo.css" rel="stylesheet" type="text/css" media="all" />
 		
 		<!--[if LTE IE 8]>
 			<link href="http://formstone.it/css/demo.ie.css" rel="stylesheet" type="text/css" media="all" />
 		<![endif]-->
 		
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 		<script src="http://formstone.it/js/demo.js"></script>
 		
 		<script src="../jquery.fs.pronto.min.js"></script>
@@ -91,6 +88,12 @@
 				</div>
 			</div>
 		</article>
+		
+		<footer id="footer" class="row">
+			<div class="all-full copyright">
+				Made with &hearts; in Hampden
+			</div>
+		</footer>
 	</body>
 </html>
 <?
