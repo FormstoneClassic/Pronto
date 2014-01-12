@@ -1,6 +1,6 @@
 {
   "name": "Pronto",
-  "version": "3.0.4-1",
+  "version": "3.0.5",
   "description": "A jQuery plugin for faster page loads. Part of the formstone library.",
   "keywords": [
     "javascript",
@@ -17,7 +17,7 @@
   "license": "MIT",
   "homepage": "http://formstone.it/pronto/",
   "main": [
-    "jquery.bp.pronto.min.js"
+    "jquery.fs.pronto.js"
   ],
   "ignore": [
     "*.json",

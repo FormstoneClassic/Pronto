@@ -1,8 +1,8 @@
 <?
 	$isPronto = ($_GET["pronto"] == "true");
-	
+
 	$page_title = "Home Page &middot; Pronto Demo";
-	
+
 	// Only output on full page loads
 	if (!$isPronto) {
 ?>
@@ -11,23 +11,23 @@
 	<head>
 		<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    	
+
 		<title><?=$page_title?></title>
-		
-		<link href="http://www.benplum.com/css/demo.css" rel="stylesheet" type="text/css" media="all" />
-		
+
+		<link href="http://formstone.it/css/demo.css" rel="stylesheet" type="text/css" media="all" />
+
 		<!--[if LTE IE 8]>
-			<link href="http://www.benplum.com/css/demo.ie.css" rel="stylesheet" type="text/css" media="all" />
+			<link href="http://formstone.it/css/demo.ie.css" rel="stylesheet" type="text/css" media="all" />
 		<![endif]-->
-		
-		<script src="http://www.benplum.com/js/demo.js"></script>
-		
+
+		<script src="http://formstone.it/js/demo.js"></script>
+
 		<script src="../jquery.fs.pronto.min.js"></script>
 		<script src="js/main.js"></script>
-		
+
 		<style>
 		</style>
-		
+
 		<script>
 		</script>
 	</head>
@@ -56,7 +56,7 @@
 	}
 	// END: Only output on full page loads
 ?>
-			
+
 			<?
 				// Always output
 				if ($isPronto) {
@@ -80,15 +80,15 @@
 				}
 				// END: Always output
 			?>
-				
-<?			
+
+<?
 	// Only output on full page loads
 	if (!$isPronto) {
-?>	
+?>
 				</div>
 			</div>
 		</article>
-		
+
 		<footer id="footer" class="row">
 			<div class="all-full copyright">
 				Made with &hearts; in Hampden

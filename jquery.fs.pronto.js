@@ -1,5 +1,5 @@
 /* 
- * Pronto v3.0.4-1 - 2014-01-08 
+ * Pronto v3.0.5 - 2014-01-12 
  * A jQuery plugin for faster page loads. Part of the formstone library. 
  * http://formstone.it/pronto/ 
  * 
@@ -10,18 +10,18 @@
  * @plugin 
  * @name Pronto 
  * @description A jQuery plugin for faster page loads. Part of the formstone library. 
- * @version 3.0.4-1 
+ * @version 3.0.5 
  */ 
 
 ;(function ($, window) {
 	"use strict";
-	
-	/* global ga */ 
-	
+
+	/* global ga */
+
 	var $window = $(window),
 		navtiveSupport = window.history && window.history.pushState && window.history.replaceState,
 		currentURL = '';
-	
+
 	/**
 	 * @options
 	 * @param force [boolean] <false> "Forces new requests when navigating back/forward"
@@ -39,8 +39,8 @@
 		selector: "a",
 		render: $.noop,
 		requestKey: "pronto",
-		target: { 
-			title: "title", 
+		target: {
+			title: "title",
 			content: "#pronto"
 		},
 		tracking: {
@@ -50,18 +50,18 @@
 			event: 'PageView' // event name - rule in tag manager
 		}
 	};
-	
+
 	/**
 	 * @events
-	 * @event request.pronto "Before request is made; triggered on window"
-	 * @event load.pronto "After request is loaded; triggered on window"
-	 * @event render.pronto "After state is rendered; triggered on window"
+	 * @event pronto.request "Before request is made; triggered on window"
+	 * @event pronto.load "After request is loaded; triggered on window"
+	 * @event pronto.render "After state is rendered; triggered on window"
 	 */
-	
+
 	var pub = {
-		
+
 		/**
-		 * @method 
+		 * @method
 		 * @name defaults
 		 * @description Sets default plugin options
 		 * @param opts [object] <{}> "Options object"
@@ -71,11 +71,11 @@
 			options = $.extend(options, opts || {});
 			return $(this);
 		},
-		
+
 		/**
-		 * @method 
+		 * @method
 		 * @name load
-		 * @description Loads new page 
+		 * @description Loads new page
 		 * @param opts [url] <''> "URL to load"
 		 * @example $.pronto("load", "http://website.com/page/");
 		 */
@@ -88,7 +88,7 @@
 			return;
 		}
 	};
-	
+
 	/**
 	 * @method private
 	 * @name _init
@@ -100,27 +100,27 @@
 		if (!navtiveSupport) {
 			return;
 		}
-		
+
 		$.extend(true, options, opts || {});
-		
+
 		options.$body = $("body");
 		options.$container = $(options.container);
 		if (options.render === $.noop) {
 			options.render = _renderState;
 		}
-		
+
 		// Capture current url & state
 		currentURL = window.location.href;
-		
+
 		// Set initial state
 		_saveState();
-		
+
 		// Bind state events
 		$window.on("popstate.pronto", _onPop);
-		
+
 		options.$body.on("click.pronto", options.selector, _onClick);
 	}
-	
+
 	/**
 	 * @method private
 	 * @name _onClick
@@ -129,28 +129,28 @@
 	 */
 	function _onClick(e) {
 		var url = e.currentTarget;
-		
+
 		// Ignore everything but normal click
 		if (  (e.which > 1 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) || (window.location.protocol !== url.protocol || window.location.host !== url.host) || url.target === "_blank" ) {
 			return;
 		}
-		
+
 		// Update state on hash change
 		if (url.hash && url.href.replace(url.hash, '') === window.location.href.replace(location.hash, '') || url.href === window.location.href + '#') {
 			_saveState();
 			return;
 		}
-		
+
 		e.preventDefault();
 		e.stopPropagation();
-		
+
 		if (currentURL === url.href) {
 			_saveState();
 		} else {
 			_request(url.href);
 		}
 	}
-	
+
 	/**
 	 * @method private
 	 * @name _onPop
@@ -159,7 +159,7 @@
 	 */
 	function _onPop(e) {
 		var data = e.originalEvent.state;
-		
+
 		// Check if data exists
 		if (data !== null && data.url !== currentURL) {
 			if (options.force) {
@@ -167,13 +167,13 @@
 				_request(data.url, data.scroll, false);
 			} else {
 				// Fire request event
-				$window.trigger("request.pronto");
-				
+				$window.trigger("pronto.request");
+
 				_process(data.url, data.data, data.scroll, false);
 			}
 		}
 	}
-	
+
 	/**
 	 * @method private
 	 * @name _request
@@ -184,8 +184,8 @@
 	 */
 	function _request(url, scrollTop, doPush) {
 		// Fire request event
-		$window.trigger("request.pronto");
-		
+		$window.trigger("pronto.request");
+
 		// Request new content
 		$.ajax({
 			url: url + ((url.indexOf("?") > -1) ? "&"+options.requestKey+"=true" : "?"+options.requestKey+"=true"),
@@ -194,7 +194,7 @@
 				response  = (typeof response === "string") ? $.parseJSON(response) : response;
 				scrollTop = (typeof scrollTop !== "undefined") ? scrollTop : 0;
 				doPush    = (typeof doPush !== "undefined") ? doPush : true;
-				
+
 				_process(url, response, scrollTop, doPush);
 			},
 			error: function(response) {
@@ -202,7 +202,7 @@
 			}
 		});
 	}
-	
+
 	/**
 	 * @method private
 	 * @name _process
@@ -214,20 +214,20 @@
 	 */
 	function _process(url, data, scrollTop, doPush) {
 		// Fire load event
-		$window.trigger("load.pronto");
-		
+		$window.trigger("pronto.load");
+
 		// Trigger analytics page view
 		_track(url);
-		
+
 		// Update current state before rendering new state
 		_saveState();
-		
+
 		// Render before updating
 		options.render.call(this, data);
-		
+
 		// Update current url
 		currentURL = url;
-		
+
 		if (doPush) {
 			// Push new states to the stack
 			history.pushState({
@@ -239,11 +239,11 @@
 			// Update state with history data
 			_saveState();
 		}
-		
-		$window.trigger("render.pronto")
+
+		$window.trigger("pronto.render")
 			   .scrollTop(scrollTop);
 	}
-	
+
 	/**
 	 * @method private
 	 * @name _renderState
@@ -260,7 +260,7 @@
 			}
 		}
 	}
-	
+
 	/**
 	 * @method private
 	 * @name _saveState
@@ -268,13 +268,13 @@
 	 */
 	function _saveState() {
 		// Save state data before updating history
-		var data = []; 
+		var data = [];
 		for (var key in options.target) {
 			if (options.target.hasOwnProperty(key)) {
 				data[key] = $(options.target[key]).html();
 			}
 		}
-		
+
 		// Update state
 		history.replaceState({
 			url: currentURL,
@@ -282,7 +282,7 @@
 			scroll: $window.scrollTop()
 		}, "state-"+currentURL, currentURL);
 	}
-	
+
 	/**
 	 * @method private
 	 * @name _unescape
@@ -297,7 +297,7 @@
 				   .replace(/&quot;/g, '"')
 				   .replace(/&#039;/g, "'");
 	}
-	
+
 	/**
 	 * @method private
 	 * @name _track
@@ -307,7 +307,7 @@
 	function _track(url) {
 		// Strip domain
 		url = url.replace(window.location.protocol + "//" + window.location.host, "");
-		
+
 		if (options.tracking.legacy) {
 			// Legacy Analytics
 			window._gaq = window._gaq || [];
@@ -319,7 +319,7 @@
 				var page = {};
 				page[options.tracking.variable] = url;
 				window.dataLayer = window.dataLayer || [];
-				
+
 				// Push new url to varibale then tracking event
 				window.dataLayer.push(page);
 				window.dataLayer.push({ 'event': options.tracking.event });
@@ -328,14 +328,14 @@
 				if (typeof ga === "function") {
 					ga('send', 'pageview', url);
 				}
-				
+
 				// Specific tracker - only needed if using mutiple and/or tag manager
-				//var t = ga.getAll(); 
+				//var t = ga.getAll();
 				//ga(t[0].get('name')+'.send', 'pageview', '/mimeo/');
 			}
 		}
 	}
-	
+
 	$.pronto = function(method) {
 		if (pub[method]) {
 			return pub[method].apply(this, Array.prototype.slice.call(arguments, 1));
