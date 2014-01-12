@@ -6,13 +6,6 @@
  * Copyright 2014 Ben Plum; MIT Licensed 
  */ 
 
-/** 
- * @plugin 
- * @name Pronto 
- * @description A jQuery plugin for faster page loads. Part of the formstone library. 
- * @version 3.0.5 
- */ 
-
 ;(function ($, window) {
 	"use strict";
 

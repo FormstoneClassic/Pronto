@@ -5,7 +5,9 @@
 				 .on("pronto.render", initPage);
 
 		// Init pronto
-		$.pronto();
+		$.pronto({
+			selector: "a:not(.no-pronto)"
+		});
 
 		// Remember to init first page
 		initPage();

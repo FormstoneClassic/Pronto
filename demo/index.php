@@ -35,7 +35,7 @@
 		<header id="header">
 			<div class="row">
 				<div class="all-full">
-					<a href="http://formstone.it/" class="branding">Formstone</a>
+					<a href="http://formstone.it/" class="branding no-pronto">Formstone</a>
 				</div>
 			</div>
 		</header>
@@ -45,7 +45,7 @@
 					<h1>Pronto Demo</h1>
 					<!-- <p>A technical demonstration of the jQuery plugin.</p> -->
 					<br />
-					<a href="http://formstone.it/pronto/" class="button">View Documentation</a>
+					<a href="http://formstone.it/pronto/" class="button no-pronto">View Documentation</a>
 				</header>
 				<nav>
 					<a href="index.php">Home</a>

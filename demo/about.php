@@ -1,8 +1,8 @@
 <?
 	$isPronto = ($_GET["pronto"] == "true");
-	
+
 	$page_title = "About Page &middot; Pronto Demo";
-	
+
 	// Only output on full page loads
 	if (!$isPronto) {
 ?>
@@ -11,23 +11,23 @@
 	<head>
 		<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    	
+
 		<title><?=$page_title?></title>
-		
+
 		<link href="http://formstone.it/css/demo.css" rel="stylesheet" type="text/css" media="all" />
-		
+
 		<!--[if LTE IE 8]>
 			<link href="http://formstone.it/css/demo.ie.css" rel="stylesheet" type="text/css" media="all" />
 		<![endif]-->
-		
+
 		<script src="http://formstone.it/js/demo.js"></script>
-		
+
 		<script src="../jquery.fs.pronto.min.js"></script>
 		<script src="js/main.js"></script>
-		
+
 		<style>
 		</style>
-		
+
 		<script>
 		</script>
 	</head>
@@ -35,7 +35,7 @@
 		<header id="header">
 			<div class="row">
 				<div class="all-full">
-					<a href="http://formstone.it/" class="branding">Formstone</a>
+					<a href="http://formstone.it/" class="branding no-pronto">Formstone</a>
 				</div>
 			</div>
 		</header>
@@ -45,7 +45,7 @@
 					<h1>Pronto Demo</h1>
 					<!-- <p>A technical demonstration of the jQuery plugin.</p> -->
 					<br />
-					<a href="http://formstone.it/pronto/" class="button">View Documentation</a>
+					<a href="http://formstone.it/pronto/" class="button no-pronto">View Documentation</a>
 				</header>
 				<nav>
 					<a href="index.php">Home</a>
@@ -81,14 +81,14 @@
 						// END: Always output
 					?>
 
-<?			
+<?
 	// Only output on full page loads
 	if (!$isPronto) {
-?>	
+?>
 				</div>
 			</div>
 		</article>
-		
+
 		<footer id="footer" class="row">
 			<div class="all-full copyright">
 				Made with &hearts; in Hampden

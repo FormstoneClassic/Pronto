@@ -40,19 +40,12 @@ module.exports = function(grunt) {
 		concat: {
 			js: {
 				options: {
-					banner: '<%= meta.banner %>' +
-							'/** \n' +
-							' * @plugin \n' +
-							' * @name <%= pkg.name %> \n' +
-							' * @description <%= pkg.description %> \n' +
-							' * @version <%= pkg.version %> \n' +
-							' */ \n\n'
+					banner: '<%= meta.banner %>'
 				},
 				files: {
 					'<%= pkg.codename %>.js': [ 'src/<%= pkg.codename %>.js' ]
 				}
-			}
-			/* ,
+			} /* ,
 			css: {
 				options: {
 					banner: '<%= meta.banner %>'
@@ -60,8 +53,7 @@ module.exports = function(grunt) {
 				files: {
 					'<%= pkg.codename %>.css': [ 'src/<%= pkg.codename %>.css' ]
 				}
-			}
-			*/
+			} */
 		},
 		// Uglify
 		uglify: {
@@ -100,7 +92,8 @@ module.exports = function(grunt) {
 					sync: [ 'name', 'version', 'description', 'author', 'license', 'homepage' ],
 					overrides: {
 						main: [
-							'<%= pkg.codename %>.js'
+							'<%= pkg.codename %>.js' /* ,
+							'<%= pkg.codename %>.css' */
 						],
 						ignore: [ "*.json", "Gruntfile.js" ]
 					}
