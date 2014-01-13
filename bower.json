@@ -20,8 +20,9 @@
     "jquery.fs.pronto.js"
   ],
   "ignore": [
-    "*.json",
-    "Gruntfile.js"
+    "*.jquery.json",
+    "Gruntfile.js",
+    "src/"
   ],
   "dependencies": {
     "jquery": ">= 1.7.0"
