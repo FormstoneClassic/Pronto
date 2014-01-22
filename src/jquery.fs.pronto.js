@@ -128,6 +128,7 @@
 
 		e.preventDefault();
 		e.stopPropagation();
+		e.stopImmediatePropagation();
 
 		if (currentURL === url.href) {
 			_saveState();

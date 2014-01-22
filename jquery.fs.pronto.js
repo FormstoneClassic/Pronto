@@ -1,5 +1,5 @@
 /* 
- * Pronto v3.0.7 - 2014-01-20 
+ * Pronto v3.0.8 - 2014-01-22 
  * A jQuery plugin for faster page loads. Part of the formstone library. 
  * http://formstone.it/pronto/ 
  * 
@@ -136,6 +136,7 @@
 
 		e.preventDefault();
 		e.stopPropagation();
+		e.stopImmediatePropagation();
 
 		if (currentURL === url.href) {
 			_saveState();
