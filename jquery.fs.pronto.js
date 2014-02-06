@@ -1,5 +1,5 @@
 /* 
- * Pronto v3.0.8 - 2014-01-22 
+ * Pronto v3.0.9 - 2014-02-06 
  * A jQuery plugin for faster page loads. Part of the formstone library. 
  * http://formstone.it/pronto/ 
  * 
@@ -155,7 +155,7 @@
 		var data = e.originalEvent.state;
 
 		// Check if data exists
-		if (data !== null && data.url !== currentURL) {
+		if (data && data.url !== currentURL) {
 			if (options.force) {
 				// Force a new request, even if navigating back
 				_request(data.url, data.scroll, false);

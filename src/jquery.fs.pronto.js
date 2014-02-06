@@ -147,7 +147,7 @@
 		var data = e.originalEvent.state;
 
 		// Check if data exists
-		if (data !== null && data.url !== currentURL) {
+		if (data && data.url !== currentURL) {
 			if (options.force) {
 				// Force a new request, even if navigating back
 				_request(data.url, data.scroll, false);
