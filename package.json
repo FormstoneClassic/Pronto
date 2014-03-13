@@ -2,7 +2,7 @@
   "name": "Pronto",
   "id": "pronto",
   "codename": "jquery.fs.pronto",
-  "version": "3.0.9",
+  "version": "3.0.10",
   "description": "A jQuery plugin for faster page loads. Part of the formstone library.",
   "keywords": [
     "performance",

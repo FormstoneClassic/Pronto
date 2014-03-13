@@ -2,7 +2,8 @@
 		// Bind pronto events
 		$(window).on("pronto.request", requestPage)
 				 .on("pronto.load", destroyPage)
-				 .on("pronto.render", initPage);
+				 .on("pronto.render", initPage)
+				 .on("pronto.error", errorPage);
 
 		// Init pronto
 		$.pronto({
@@ -14,15 +15,19 @@
 	});
 
 	function requestPage() {
-		console.log("load");
+		console.log("Request new page");
 	}
 
 	function initPage() {
 		// bind events and initialize plugins
-		console.log("init");
+		console.log("Render new page");
 	}
 
 	function destroyPage() {
 		// unbind events and remove plugins
-		console.log("destroy");
+		console.log("Destroy old page");
+	}
+
+	function errorPage() {
+		console.error("Error loading page");
 	}

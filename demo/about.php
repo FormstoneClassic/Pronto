@@ -22,7 +22,7 @@
 
 		<script src="http://formstone.it/js/demo.js"></script>
 
-		<script src="../jquery.fs.pronto.min.js"></script>
+		<script src="../src/jquery.fs.pronto.js"></script>
 		<script src="js/main.js"></script>
 
 		<style>

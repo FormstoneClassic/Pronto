@@ -41,6 +41,7 @@
 	 * @event pronto.request "Before request is made; triggered on window"
 	 * @event pronto.load "After request is loaded; triggered on window"
 	 * @event pronto.render "After state is rendered; triggered on window"
+	 * @event pronto.error "After load error; triggered on window"
 	 */
 
 	var pub = {
@@ -150,7 +151,7 @@
 		if (data && data.url !== currentURL) {
 			if (options.force) {
 				// Force a new request, even if navigating back
-				_request(data.url, data.scroll, false);
+				_request(data.url);
 			} else {
 				// Fire request event
 				$window.trigger("pronto.request");
@@ -165,10 +166,8 @@
 	 * @name _request
 	 * @description Requests new content via AJAX
 	 * @param url [string] "URL to load"
-	 * @param scrollTop [int] "Current scroll position"
-	 * @param doPush [boolean] "Flag to replace or add state"
 	 */
-	function _request(url, scrollTop, doPush) {
+	function _request(url) {
 		// Fire request event
 		$window.trigger("pronto.request");
 
@@ -178,13 +177,19 @@
 			dataType: "json",
 			success: function(response) {
 				response  = (typeof response === "string") ? $.parseJSON(response) : response;
-				scrollTop = (typeof scrollTop !== "undefined") ? scrollTop : 0;
-				doPush    = (typeof doPush !== "undefined") ? doPush : true;
 
-				_process(url, response, scrollTop, doPush);
+				_process(url, response, 0, true);
 			},
-			error: function(response) {
-				window.location.href = url;
+			error: function(jqXHR, status, error) {
+				$window.trigger("pronto.error", [ error ]);
+
+				// Try to parse response text
+				try {
+					var response  = $.parseJSON(jqXHR.responseText);
+					_process(url, response, 0, true);
+				} catch (e) {
+					//console.error(e);
+				}
 			}
 		});
 	}
