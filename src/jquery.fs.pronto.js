@@ -181,7 +181,7 @@
 		$.ajax({
 			url: url + ((url.indexOf("?") > -1) ? "&"+options.requestKey+"=true" : "?"+options.requestKey+"=true"),
 			dataType: "json",
-			cache: false,
+			/* cache: false, */
 			xhr: function() {
 				// custom xhr
 				var xhr = new window.XMLHttpRequest();

@@ -1,5 +1,5 @@
 /* 
- * Pronto v3.0.12 - 2014-03-13 
+ * Pronto v3.0.13 - 2014-03-13 
  * A jQuery plugin for faster page loads. Part of the formstone library. 
  * http://formstone.it/pronto/ 
  * 
@@ -189,7 +189,7 @@
 		$.ajax({
 			url: url + ((url.indexOf("?") > -1) ? "&"+options.requestKey+"=true" : "?"+options.requestKey+"=true"),
 			dataType: "json",
-			cache: false,
+			/* cache: false, */
 			xhr: function() {
 				// custom xhr
 				var xhr = new window.XMLHttpRequest();
