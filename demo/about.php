@@ -1,6 +1,8 @@
 <?
 	$isPronto = ($_GET["pronto"] == "true");
 
+	ob_start();
+
 	$page_title = "About Page &middot; Pronto Demo";
 
 	// Only output on full page loads
@@ -22,7 +24,7 @@
 
 		<script src="http://formstone.it/js/demo.js"></script>
 
-		<script src="../src/jquery.fs.pronto.js"></script>
+		<script src="../jquery.fs.pronto.js"></script>
 		<script src="js/main.js"></script>
 
 		<style>
@@ -73,10 +75,10 @@
 						if ($isPronto) {
 							// If pronto request, return json object with page pieces
 							$page_content = ob_get_clean();
-							die(json_encode(array(
+							echo json_encode(array(
 								"title" => $page_title,
 								"content" => $page_content
-							)));
+							));
 						}
 						// END: Always output
 					?>
@@ -99,4 +101,11 @@
 <?
 	}
 	// END: Only output on full page loads
+
+	$size = ob_get_length();
+	$content = ob_get_clean();
+
+	header("Content-length: " . $size);
+	die($content);
+
 ?>

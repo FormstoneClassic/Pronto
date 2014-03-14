@@ -4,6 +4,7 @@
 	/* global ga */
 
 	var $window = $(window),
+		$body = $("body"),
 		navtiveSupport = window.history && window.history.pushState && window.history.replaceState,
 		currentURL = '';
 
@@ -39,6 +40,7 @@
 	/**
 	 * @events
 	 * @event pronto.request "Before request is made; triggered on window"
+	 * @event pronto.progress "As request is loaded; triggered on window"
 	 * @event pronto.load "After request is loaded; triggered on window"
 	 * @event pronto.render "After state is rendered; triggered on window"
 	 * @event pronto.error "After load error; triggered on window"
@@ -87,24 +89,26 @@
 			return;
 		}
 
-		$.extend(true, options, opts || {});
+		if (!$body.hasClass("pronto")) {
+			$.extend(true, options, opts || {});
 
-		options.$body = $("body");
-		options.$container = $(options.container);
-		if (options.render === $.noop) {
-			options.render = _renderState;
+			options.$container = $(options.container);
+			if (options.render === $.noop) {
+				options.render = _renderState;
+			}
+
+			// Capture current url & state
+			currentURL = window.location.href;
+
+			// Set initial state
+			_saveState();
+
+			// Bind state events
+			$window.on("popstate.pronto", _onPop);
+
+			$body.on("click.pronto", options.selector, _onClick)
+				 .addClass("pronto");
 		}
-
-		// Capture current url & state
-		currentURL = window.location.href;
-
-		// Set initial state
-		_saveState();
-
-		// Bind state events
-		$window.on("popstate.pronto", _onPop);
-
-		options.$body.on("click.pronto", options.selector, _onClick);
 	}
 
 	/**
@@ -175,6 +179,33 @@
 		$.ajax({
 			url: url + ((url.indexOf("?") > -1) ? "&"+options.requestKey+"=true" : "?"+options.requestKey+"=true"),
 			dataType: "json",
+			cache: false,
+			xhr: function() {
+				// custom xhr
+				var xhr = new window.XMLHttpRequest();
+
+				/*
+				//Upload progress ?
+				xhr.upload.addEventListener("progress", function(e) {
+					console.log("upload", e, e.lengthComputable);
+					if (e.lengthComputable) {
+						var percent = (e.loaded / e.total) / 2;
+						$window.trigger("pronto.progress", [ percent ]);
+					}
+				}, false);
+				*/
+
+				//Download progress
+				xhr.addEventListener("progress", function(e) {
+					/* console.log("download", e, e.lengthComputable); */
+					if (e.lengthComputable) {
+						var percent = e.loaded / e.total;
+						$window.trigger("pronto.progress", [ percent ]);
+					}
+				}, false);
+
+				return xhr;
+			},
 			success: function(response) {
 				response  = (typeof response === "string") ? $.parseJSON(response) : response;
 
@@ -272,6 +303,9 @@
 			data: data,
 			scroll: $window.scrollTop()
 		}, "state-"+currentURL, currentURL);
+	}
+
+	function _updateProgress(percent) {
 	}
 
 	/**
