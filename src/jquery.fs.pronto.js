@@ -4,7 +4,7 @@
 	/* global ga */
 
 	var $window = $(window),
-		$body = $("body"),
+		$body,
 		navtiveSupport = window.history && window.history.pushState && window.history.replaceState,
 		currentURL = '';
 
@@ -88,6 +88,8 @@
 		if (!navtiveSupport) {
 			return;
 		}
+
+		$body = $("body");
 
 		if (!$body.hasClass("pronto")) {
 			$.extend(true, options, opts || {});
@@ -187,7 +189,6 @@
 				/*
 				//Upload progress ?
 				xhr.upload.addEventListener("progress", function(e) {
-					console.log("upload", e, e.lengthComputable);
 					if (e.lengthComputable) {
 						var percent = (e.loaded / e.total) / 2;
 						$window.trigger("pronto.progress", [ percent ]);
@@ -197,7 +198,6 @@
 
 				//Download progress
 				xhr.addEventListener("progress", function(e) {
-					/* console.log("download", e, e.lengthComputable); */
 					if (e.lengthComputable) {
 						var percent = e.loaded / e.total;
 						$window.trigger("pronto.progress", [ percent ]);
