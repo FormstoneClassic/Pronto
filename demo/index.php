@@ -1,5 +1,8 @@
 <?
-	$isPronto = ($_GET["pronto"] == "true");
+	error_reporting(E_ALL);
+	ini_set('display_errors', '1');
+
+	$isPronto = (isset($_GET["pronto"]) && $_GET["pronto"] == "true");
 
 	ob_start();
 
