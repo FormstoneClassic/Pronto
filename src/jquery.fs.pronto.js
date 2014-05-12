@@ -11,9 +11,10 @@
 	/**
 	 * @options
 	 * @param force [boolean] <false> "Forces new requests when navigating back/forward"
+	 * @param jump [boolean] <false> "Jump page to top on render"
 	 * @param selecter [string] <'a'> "Selecter to target in the DOM"
 	 * @param render [function] <$.noop> "Custom render function"
-	 * @param requestKey [string] <'boxer'> "GET variable for requests"
+	 * @param requestKey [string] <'pronto'> "GET variable for requests"
 	 * @param target [object] <{ title: 'title', content: '#pronto' }> "Key / value pair for rendering responses (key is response key, value is target selector)"
 	 * @param tracking.legacy [boolean] <false> "Flag for legacy Google Analytics tracking"
 	 * @param tracking.manager [boolean] <false> "Flag for Tag Manager tracking"
@@ -22,6 +23,7 @@
 	 */
 	var options = {
 		force: false,
+		jump: true,
 		selector: "a",
 		render: $.noop,
 		requestKey: "pronto",
@@ -209,7 +211,7 @@
 			success: function(response) {
 				response  = (typeof response === "string") ? $.parseJSON(response) : response;
 
-				_process(url, response, 0, true);
+				_process(url, response, (options.jump ? 0 : false), true);
 			},
 			error: function(jqXHR, status, error) {
 				$window.trigger("pronto.error", [ error ]);
@@ -262,8 +264,11 @@
 			_saveState();
 		}
 
-		$window.trigger("pronto.render")
-			   .scrollTop(scrollTop);
+		$window.trigger("pronto.render");
+
+		if (scrollTop !== false) {
+			$window.scrollTop(scrollTop);
+		}
 	}
 
 	/**
