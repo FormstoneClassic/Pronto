@@ -64,6 +64,32 @@
 
 		/**
 		 * @method
+		 * @name disable
+		 * @description Disable Pronto
+		 * @example $.pronto("enable");
+		 */
+		disable: function() {
+			if ($body.hasClass("pronto")) {
+				$body.off("click.pronto")
+					 .removeClass("pronto");
+			}
+		},
+
+		/**
+		 * @method
+		 * @name enable
+		 * @description Enables Pronto
+		 * @example $.pronto("enable");
+		 */
+		enable: function() {
+			if (!$body.hasClass("pronto")) {
+				$body.on("click.pronto", options.selector, _onClick)
+					 .addClass("pronto");
+			}
+		},
+
+		/**
+		 * @method
 		 * @name load
 		 * @description Loads new page
 		 * @param opts [url] <''> "URL to load"
@@ -110,8 +136,7 @@
 			// Bind state events
 			$window.on("popstate.pronto", _onPop);
 
-			$body.on("click.pronto", options.selector, _onClick)
-				 .addClass("pronto");
+			pub.enable();
 		}
 	}
 
