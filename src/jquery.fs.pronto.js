@@ -12,8 +12,9 @@
 	 * @options
 	 * @param force [boolean] <false> "Forces new requests when navigating back/forward"
 	 * @param jump [boolean] <false> "Jump page to top on render"
-	 * @param selecter [string] <'a'> "Selecter to target in the DOM"
+	 * @param selector [string] <'a'> "Selector of target links"
 	 * @param render [function] <$.noop> "Custom render function"
+	 * @param requestDelay [number] <0> "Delay before making request; For timing page transition animations"
 	 * @param requestKey [string] <'pronto'> "GET variable for requests"
 	 * @param target [object] <{ title: 'title', content: '#pronto' }> "Key / value pair for rendering responses (key is response key, value is target selector)"
 	 * @param tracking.legacy [boolean] <false> "Flag for legacy Google Analytics tracking"
@@ -27,6 +28,7 @@
 		selector: "a",
 		render: $.noop,
 		requestKey: "pronto",
+		requestDelay: 0,
 		target: {
 			title: "title",
 			content: "#pronto"
@@ -204,52 +206,54 @@
 		// Fire request event
 		$window.trigger("pronto.request");
 
-		// Request new content
-		$.ajax({
-			url: url + ((url.indexOf("?") > -1) ? "&"+options.requestKey+"=true" : "?"+options.requestKey+"=true"),
-			dataType: "json",
-			/* cache: false, */
-			xhr: function() {
-				// custom xhr
-				var xhr = new window.XMLHttpRequest();
+		setTimeout(function() {
+			// Request new content
+			$.ajax({
+				url: url + ((url.indexOf("?") > -1) ? "&"+options.requestKey+"=true" : "?"+options.requestKey+"=true"),
+				dataType: "json",
+				/* cache: false, */
+				xhr: function() {
+					// custom xhr
+					var xhr = new window.XMLHttpRequest();
 
-				/*
-				//Upload progress ?
-				xhr.upload.addEventListener("progress", function(e) {
-					if (e.lengthComputable) {
-						var percent = (e.loaded / e.total) / 2;
-						$window.trigger("pronto.progress", [ percent ]);
+					/*
+					//Upload progress ?
+					xhr.upload.addEventListener("progress", function(e) {
+						if (e.lengthComputable) {
+							var percent = (e.loaded / e.total) / 2;
+							$window.trigger("pronto.progress", [ percent ]);
+						}
+					}, false);
+					*/
+
+					//Download progress
+					xhr.addEventListener("progress", function(e) {
+						if (e.lengthComputable) {
+							var percent = e.loaded / e.total;
+							$window.trigger("pronto.progress", [ percent ]);
+						}
+					}, false);
+
+					return xhr;
+				},
+				success: function(response) {
+					response  = (typeof response === "string") ? $.parseJSON(response) : response;
+
+					_process(url, response, (options.jump ? 0 : false), true);
+				},
+				error: function(jqXHR, status, error) {
+					$window.trigger("pronto.error", [ error ]);
+
+					// Try to parse response text
+					try {
+						var response  = $.parseJSON(jqXHR.responseText);
+						_process(url, response, 0, true);
+					} catch (e) {
+						//console.error(e);
 					}
-				}, false);
-				*/
-
-				//Download progress
-				xhr.addEventListener("progress", function(e) {
-					if (e.lengthComputable) {
-						var percent = e.loaded / e.total;
-						$window.trigger("pronto.progress", [ percent ]);
-					}
-				}, false);
-
-				return xhr;
-			},
-			success: function(response) {
-				response  = (typeof response === "string") ? $.parseJSON(response) : response;
-
-				_process(url, response, (options.jump ? 0 : false), true);
-			},
-			error: function(jqXHR, status, error) {
-				$window.trigger("pronto.error", [ error ]);
-
-				// Try to parse response text
-				try {
-					var response  = $.parseJSON(jqXHR.responseText);
-					_process(url, response, 0, true);
-				} catch (e) {
-					//console.error(e);
 				}
-			}
-		});
+			});
+		}, options.requestDelay);
 	}
 
 	/**
