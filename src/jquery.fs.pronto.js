@@ -191,7 +191,9 @@
 				// Fire request event
 				$window.trigger("pronto.request");
 
-				_process(data.url, data.data, data.scroll, false);
+				setTimeout(function() {
+					_process(data.url, data.data, data.scroll, false);
+				}, options.requestDelay);
 			}
 		}
 	}
