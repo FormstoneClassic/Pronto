@@ -6,15 +6,16 @@
 	var $window = $(window),
 		$body,
 		navtiveSupport = window.history && window.history.pushState && window.history.replaceState,
-		currentURL = '';
+		currentURL = '',
+		visited = 0;
 
 	/**
 	 * @options
 	 * @param force [boolean] <false> "Forces new requests when navigating back/forward"
 	 * @param jump [boolean] <false> "Jump page to top on render"
-	 * @param selector [string] <'a'> "Selector of target links"
+	 * @param modal [boolean] <false> "Flag for content loaded into modal"
+	 * @param selecter [string] <'a'> "Selecter to target in the DOM"
 	 * @param render [function] <$.noop> "Custom render function"
-	 * @param requestDelay [number] <0> "Delay before making request; For timing page transition animations"
 	 * @param requestKey [string] <'pronto'> "GET variable for requests"
 	 * @param target [object] <{ title: 'title', content: '#pronto' }> "Key / value pair for rendering responses (key is response key, value is target selector)"
 	 * @param tracking.legacy [boolean] <false> "Flag for legacy Google Analytics tracking"
@@ -25,10 +26,10 @@
 	var options = {
 		force: false,
 		jump: true,
+		modal: false,
 		selector: "a",
 		render: $.noop,
 		requestKey: "pronto",
-		requestDelay: 0,
 		target: {
 			title: "title",
 			content: "#pronto"
@@ -71,7 +72,7 @@
 		 * @example $.pronto("enable");
 		 */
 		disable: function() {
-			if ($body.hasClass("pronto")) {
+			if ($body && $body.hasClass("pronto")) {
 				$body.off("click.pronto")
 					 .removeClass("pronto");
 			}
@@ -84,7 +85,7 @@
 		 * @example $.pronto("enable");
 		 */
 		enable: function() {
-			if (!$body.hasClass("pronto")) {
+			if ($body && !$body.hasClass("pronto")) {
 				$body.on("click.pronto", options.selector, _onClick)
 					 .addClass("pronto");
 			}
@@ -182,18 +183,23 @@
 	function _onPop(e) {
 		var data = e.originalEvent.state;
 
-		// Check if data exists
-		if (data && data.url !== currentURL) {
-			if (options.force) {
-				// Force a new request, even if navigating back
-				_request(data.url);
+		if (data) {
+			if (options.modal && visited === 0 && data.url) {
+				// If opening content in a 'modal', return to original page on reload->back
+				window.location.href = data.url;
 			} else {
-				// Fire request event
-				$window.trigger("pronto.request");
+				// Check if data exists
+				if (data.url !== currentURL) {
+					if (options.force) {
+						// Force a new request, even if navigating back
+						_request(data.url);
+					} else {
+						// Fire request event
+						$window.trigger("pronto.request");
 
-				setTimeout(function() {
-					_process(data.url, data.data, data.scroll, false);
-				}, options.requestDelay);
+						_process(data.url, data.data, data.scroll, false);
+					}
+				}
 			}
 		}
 	}
@@ -208,54 +214,52 @@
 		// Fire request event
 		$window.trigger("pronto.request");
 
-		setTimeout(function() {
-			// Request new content
-			$.ajax({
-				url: url + ((url.indexOf("?") > -1) ? "&"+options.requestKey+"=true" : "?"+options.requestKey+"=true"),
-				dataType: "json",
-				/* cache: false, */
-				xhr: function() {
-					// custom xhr
-					var xhr = new window.XMLHttpRequest();
+		// Request new content
+		$.ajax({
+			url: url + ((url.indexOf("?") > -1) ? "&"+options.requestKey+"=true" : "?"+options.requestKey+"=true"),
+			dataType: "json",
+			/* cache: false, */
+			xhr: function() {
+				// custom xhr
+				var xhr = new window.XMLHttpRequest();
 
-					/*
-					//Upload progress ?
-					xhr.upload.addEventListener("progress", function(e) {
-						if (e.lengthComputable) {
-							var percent = (e.loaded / e.total) / 2;
-							$window.trigger("pronto.progress", [ percent ]);
-						}
-					}, false);
-					*/
-
-					//Download progress
-					xhr.addEventListener("progress", function(e) {
-						if (e.lengthComputable) {
-							var percent = e.loaded / e.total;
-							$window.trigger("pronto.progress", [ percent ]);
-						}
-					}, false);
-
-					return xhr;
-				},
-				success: function(response) {
-					response  = (typeof response === "string") ? $.parseJSON(response) : response;
-
-					_process(url, response, (options.jump ? 0 : false), true);
-				},
-				error: function(jqXHR, status, error) {
-					$window.trigger("pronto.error", [ error ]);
-
-					// Try to parse response text
-					try {
-						var response  = $.parseJSON(jqXHR.responseText);
-						_process(url, response, 0, true);
-					} catch (e) {
-						//console.error(e);
+				/*
+				//Upload progress ?
+				xhr.upload.addEventListener("progress", function(e) {
+					if (e.lengthComputable) {
+						var percent = (e.loaded / e.total) / 2;
+						$window.trigger("pronto.progress", [ percent ]);
 					}
+				}, false);
+				*/
+
+				//Download progress
+				xhr.addEventListener("progress", function(e) {
+					if (e.lengthComputable) {
+						var percent = e.loaded / e.total;
+						$window.trigger("pronto.progress", [ percent ]);
+					}
+				}, false);
+
+				return xhr;
+			},
+			success: function(response) {
+				response  = (typeof response === "string") ? $.parseJSON(response) : response;
+
+				_process(url, response, (options.jump ? 0 : false), true);
+			},
+			error: function(jqXHR, status, error) {
+				$window.trigger("pronto.error", [ error ]);
+
+				// Try to parse response text
+				try {
+					var response  = $.parseJSON(jqXHR.responseText);
+					_process(url, response, 0, true);
+				} catch (e) {
+					//console.error(e);
 				}
-			});
-		}, options.requestDelay);
+			}
+		});
 	}
 
 	/**
@@ -288,8 +292,10 @@
 			history.pushState({
 				url: currentURL,
 				data: data,
-				scroll: 0
+				scroll: scrollTop
 			}, "state-"+currentURL, currentURL);
+
+			visited++;
 		} else {
 			// Update state with history data
 			_saveState();
