@@ -1,5 +1,5 @@
 /* 
- * Pronto v3.0.18 - 2014-08-19 
+ * Pronto v3.0.19 - 2014-09-19 
  * A jQuery plugin for faster page loads. Part of the formstone library. 
  * http://formstone.it/pronto/ 
  * 
@@ -15,10 +15,12 @@
 		$body,
 		navtiveSupport = window.history && window.history.pushState && window.history.replaceState,
 		currentURL = '',
-		visited = 0;
+		visited = 0,
+		request = null;
 
 	/**
 	 * @options
+	 * @param cache [boolean] <false> "Cache AJAX responses"
 	 * @param force [boolean] <false> "Forces new requests when navigating back/forward"
 	 * @param jump [boolean] <false> "Jump page to top on render"
 	 * @param modal [boolean] <false> "Flag for content loaded into modal"
@@ -32,6 +34,7 @@
 	 * @param tracking.event [string] <'PageView'> "Tag Manager event name (rule in Tag Manager)"
 	 */
 	var options = {
+		cache: false,
 		force: false,
 		jump: true,
 		modal: false,
@@ -223,10 +226,10 @@
 		$window.trigger("pronto.request");
 
 		// Request new content
-		$.ajax({
+		request = $.ajax({
 			url: url + ((url.indexOf("?") > -1) ? "&"+options.requestKey+"=true" : "?"+options.requestKey+"=true"),
 			dataType: "json",
-			/* cache: false, */
+			cache: options.cache,
 			xhr: function() {
 				// custom xhr
 				var xhr = new window.XMLHttpRequest();
@@ -251,8 +254,13 @@
 
 				return xhr;
 			},
-			success: function(response) {
+			success: function(response, status, jqXHR) {
 				response  = (typeof response === "string") ? $.parseJSON(response) : response;
+
+				// handle redirects - requires passing new location with json response
+				if (response.location) {
+					url = response.location;
+				}
 
 				_process(url, response, (options.jump ? 0 : false), true);
 			},
@@ -261,7 +269,7 @@
 
 				// Try to parse response text
 				try {
-					var response  = $.parseJSON(jqXHR.responseText);
+					var response = $.parseJSON(jqXHR.responseText);
 					_process(url, response, 0, true);
 				} catch (e) {
 					//console.error(e);

@@ -2,7 +2,7 @@
   "name": "Pronto",
   "id": "pronto",
   "codename": "jquery.fs.pronto",
-  "version": "3.0.18",
+  "version": "3.0.19",
   "description": "A jQuery plugin for faster page loads. Part of the formstone library.",
   "keywords": [
     "performance",
@@ -14,12 +14,11 @@
 	"html5",
 	"javascript",
   	"jquery",
-  	"formstone",
-	"benplum"
+  	"formstone"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/benplum/Pronto"
+    "url": "https://github.com/Formstone/Pronto"
   },
   "homepage": "http://formstone.it/pronto/",
   "demo": "http://formstone.it/components/Pronto/demo/index.html",

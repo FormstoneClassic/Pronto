@@ -1,6 +1,6 @@
 {
   "name": "pronto",
-  "version": "3.0.18",
+  "version": "3.0.19",
   "title": "Pronto",
   "author": {
     "name": "Ben Plum",
@@ -27,12 +27,11 @@
     "html5",
     "javascript",
     "jquery",
-    "formstone",
-    "benplum"
+    "formstone"
   ],
   "docs": "http://formstone.it/pronto/",
   "demo": "http://formstone.it/pronto/",
-  "download": "https://github.com/benplum/Pronto",
-  "bugs": "https://github.com/benplum/Pronto/issues",
+  "download": "https://github.com/Formstone/Pronto",
+  "bugs": "https://github.com/Formstone/Pronto/issues",
   "homepage": "http://formstone.it/pronto/"
 }
