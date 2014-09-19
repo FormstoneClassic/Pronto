@@ -1,5 +1,5 @@
 /* 
- * Pronto v3.0.19 - 2014-09-19 
+ * Pronto v3.0.20 - 2014-09-19 
  * A jQuery plugin for faster page loads. Part of the formstone library. 
  * http://formstone.it/pronto/ 
  * 
@@ -20,7 +20,7 @@
 
 	/**
 	 * @options
-	 * @param cache [boolean] <false> "Cache AJAX responses"
+	 * @param cache [boolean] <true> "Cache AJAX responses"
 	 * @param force [boolean] <false> "Forces new requests when navigating back/forward"
 	 * @param jump [boolean] <false> "Jump page to top on render"
 	 * @param modal [boolean] <false> "Flag for content loaded into modal"
@@ -34,7 +34,7 @@
 	 * @param tracking.event [string] <'PageView'> "Tag Manager event name (rule in Tag Manager)"
 	 */
 	var options = {
-		cache: false,
+		cache: true,
 		force: false,
 		jump: true,
 		modal: false,
