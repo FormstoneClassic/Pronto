@@ -14,27 +14,30 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
-		<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 		<title><?=$page_title?></title>
 
-		<link href="http://formstone.it/css/demo.css" rel="stylesheet" type="text/css" media="all" />
+		<!-- Modernizer -->
+		<script src="http://formstone.it/js/modernizr.js"></script>
 
-		<!--[if LTE IE 8]>
-			<link href="http://formstone.it/css/demo.ie.css" rel="stylesheet" type="text/css" media="all" />
-		<![endif]-->
-
+		<!-- Demo Resources -->
+		<link href="http://formstone.it/css/demo.css" rel="stylesheet" type="text/css" media="all">
 		<script src="http://formstone.it/js/demo.js"></script>
+
+		<!--[if IE 8]>
+        	<script>var IE8 = true;</script>
+        	<script src="http://formstone.it/js/site.ie8.js"></script>
+			<link rel="stylesheet" href="http://formstone.it/css/demo.ie8.css">
+		<![endif]-->
+		<!--[if IE 9]>
+        	<script>var IE9 = true;</script>
+        	<script src="http://formstone.it/js/site.ie9.js"></script>
+		<![endif]-->
 
 		<script src="../jquery.fs.pronto.js"></script>
 		<script src="js/main.js"></script>
-
-		<style>
-		</style>
-
-		<script>
-		</script>
 	</head>
 	<body class="gridlock demo">
 		<header id="header">

@@ -161,7 +161,7 @@
 		}
 
 		// Update state on hash change
-		if (url.hash && url.href.replace(url.hash, '') === window.location.href.replace(location.hash, '') || url.href === window.location.href + '#') {
+		if (url.hash && (url.href.replace(url.hash, '') === window.location.href.replace(location.hash, '') || url.href === window.location.href + '#')) {
 			_saveState();
 			return;
 		}
@@ -200,7 +200,7 @@
 						// Fire request event
 						$window.trigger("pronto.request");
 
-						_process(data.url, data.data, data.scroll, false);
+						_process(data.url, data.hash, data.data, data.scroll, false);
 					}
 				}
 			}
@@ -217,9 +217,17 @@
 		// Fire request event
 		$window.trigger("pronto.request");
 
+		var queryIndex = url.indexOf("?"),
+			hashIndex = url.indexOf("#"),
+			data = (queryIndex > -1) ? _getQueryParams( url.slice( queryIndex + 1 ) ) : {},
+			hash = (hashIndex > -1)  ? url.slice(hashIndex, queryIndex) : "";
+
+		data[ options.requestKey ] = true;
+
 		// Request new content
 		request = $.ajax({
-			url: url + ((url.indexOf("?") > -1) ? "&"+options.requestKey+"=true" : "?"+options.requestKey+"=true"),
+			url: url,
+			data: data,
 			dataType: "json",
 			cache: options.cache,
 			xhr: function() {
@@ -254,7 +262,7 @@
 					url = response.location;
 				}
 
-				_process(url, response, (options.jump ? 0 : false), true);
+				_process(url, hash, response, (options.jump ? 0 : false), true);
 			},
 			error: function(jqXHR, status, error) {
 				$window.trigger("pronto.error", [ error ]);
@@ -262,7 +270,7 @@
 				// Try to parse response text
 				try {
 					var response = $.parseJSON(jqXHR.responseText);
-					_process(url, response, 0, true);
+					_process(url, hash, response, 0, true);
 				} catch (e) {
 					//console.error(e);
 				}
@@ -279,7 +287,7 @@
 	 * @param scrollTop [int] "Current scroll position"
 	 * @param doPush [boolean] "Flag to replace or add state"
 	 */
-	function _process(url, data, scrollTop, doPush) {
+	function _process(url, hash, data, scrollTop, doPush) {
 		// Fire load event
 		$window.trigger("pronto.load");
 
@@ -290,7 +298,7 @@
 		_saveState();
 
 		// Render before updating
-		options.render.call(this, data);
+		options.render.call(this, data, hash);
 
 		// Update current url
 		currentURL = url;
@@ -300,7 +308,8 @@
 			history.pushState({
 				url: currentURL,
 				data: data,
-				scroll: scrollTop
+				scroll: scrollTop,
+				hash: hash
 			}, "state-"+currentURL, currentURL);
 
 			visited++;
@@ -321,13 +330,22 @@
 	 * @name _renderState
 	 * @description Renders a new state
 	 * @param data [object] "State Data"
+	 * @param hash [string] "Hash"
 	 */
-	function _renderState(data) {
+	function _renderState(data, hash) {
 		// Update DOM
 		if (typeof data !== "undefined") {
 			for (var key in options.target) {
 				if (options.target.hasOwnProperty(key) && data.hasOwnProperty(key)) {
 					$(options.target[key]).html(data[key]);
+				}
+			}
+
+			if (hash !== "") {
+				var $el = $(hash);
+
+				if ($el.length) {
+					$window.scrollTop( $el.offset().top );
 				}
 			}
 		}
@@ -410,6 +428,25 @@
 			}
 		}
 	}
+
+	/**
+	 * @method private
+	 * @name _getQueryParams
+	 * @description Returns keyed object containing all GET query parameters
+	 * @param url [string] "URL to parse"
+	 * @return [object] "Keyed query params"
+	 */
+	function _getQueryParams(url) {
+		var params = {},
+			parts = url.slice( url.indexOf("?") + 1 ).split("&");
+
+		for (var i = 0; i < parts.length; i++) {
+			var part = parts[i].split("=");
+			params[ part[0] ] = part[1];
+		}
+
+		return params;
+    }
 
 	$.pronto = function(method) {
 		if (pub[method]) {
