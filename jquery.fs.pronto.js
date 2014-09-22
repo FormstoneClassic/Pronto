@@ -1,5 +1,5 @@
 /* 
- * Pronto v3.1.0 - 2014-09-20 
+ * Pronto v3.1.1 - 2014-09-22 
  * A jQuery plugin for faster page loads. Part of the formstone library. 
  * http://formstone.it/pronto/ 
  * 
@@ -55,7 +55,7 @@
 
 	/**
 	 * @events
-	 * @event pronto.request "Before request is made; triggered on window"
+	 * @event pronto.request "Before request is made; triggered on window. Second parameter 'true' if pop event"
 	 * @event pronto.progress "As request is loaded; triggered on window"
 	 * @event pronto.load "After request is loaded; triggered on window"
 	 * @event pronto.render "After state is rendered; triggered on window"
@@ -206,7 +206,7 @@
 						_request(data.url);
 					} else {
 						// Fire request event
-						$window.trigger("pronto.request");
+						$window.trigger("pronto.request", [ true ]);
 
 						_process(data.url, data.hash, data.data, data.scroll, false);
 					}
@@ -223,7 +223,7 @@
 	 */
 	function _request(url) {
 		// Fire request event
-		$window.trigger("pronto.request");
+		$window.trigger("pronto.request", [ false ]);
 
 		var queryIndex = url.indexOf("?"),
 			hashIndex = url.indexOf("#"),
