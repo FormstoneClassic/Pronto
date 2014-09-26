@@ -1,5 +1,5 @@
 /* 
- * Pronto v3.1.1 - 2014-09-22 
+ * Pronto v3.1.2 - 2014-09-26 
  * A jQuery plugin for faster page loads. Part of the formstone library. 
  * http://formstone.it/pronto/ 
  * 
@@ -228,7 +228,11 @@
 		var queryIndex = url.indexOf("?"),
 			hashIndex = url.indexOf("#"),
 			data = (queryIndex > -1) ? _getQueryParams( url.slice( queryIndex + 1 ) ) : {},
-			hash = (hashIndex > -1)  ? url.slice(hashIndex, queryIndex) : "";
+			hash = "";
+
+		if (hashIndex > -1) {
+			hash = (queryIndex > -1) ? url.slice(hashIndex, queryIndex) : url.slice(hashIndex);
+		}
 
 		data[ options.requestKey ] = true;
 
@@ -280,7 +284,7 @@
 					var response = $.parseJSON(jqXHR.responseText);
 					_process(url, hash, response, 0, true);
 				} catch (e) {
-					//console.error(e);
+					// console.error(e);
 				}
 			}
 		});
@@ -328,7 +332,15 @@
 
 		$window.trigger("pronto.render");
 
-		if (scrollTop !== false) {
+		if (hash !== "") {
+			var $el = $(hash);
+
+			if ($el.length) {
+				scrollTop = $el.offset().top;
+			}
+		}
+
+		if (scrollTop > 0) {
 			$window.scrollTop(scrollTop);
 		}
 	}
@@ -346,14 +358,6 @@
 			for (var key in options.target) {
 				if (options.target.hasOwnProperty(key) && data.hasOwnProperty(key)) {
 					$(options.target[key]).html(data[key]);
-				}
-			}
-
-			if (hash !== "") {
-				var $el = $(hash);
-
-				if ($el.length) {
-					$window.scrollTop( $el.offset().top );
 				}
 			}
 		}
