@@ -1,5 +1,5 @@
 /* 
- * Pronto v3.1.2 - 2014-09-26 
+ * Pronto v3.1.3 - 2014-09-26 
  * A jQuery plugin for faster page loads. Part of the formstone library. 
  * http://formstone.it/pronto/ 
  * 
@@ -340,7 +340,7 @@
 			}
 		}
 
-		if (scrollTop > 0) {
+		if (scrollTop !== false) {
 			$window.scrollTop(scrollTop);
 		}
 	}

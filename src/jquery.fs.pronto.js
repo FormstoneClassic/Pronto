@@ -332,7 +332,7 @@
 			}
 		}
 
-		if (scrollTop > 0) {
+		if (scrollTop !== false) {
 			$window.scrollTop(scrollTop);
 		}
 	}
