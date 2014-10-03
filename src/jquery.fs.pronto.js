@@ -187,7 +187,7 @@
 		var data = e.originalEvent.state;
 
 		if (data) {
-			if (options.modal && visited === 0 && data.url) {
+			if (options.modal && visited === 0 && data.url && !data.initial) {
 				// If opening content in a 'modal', return to original page on reload->back
 				window.location.href = data.url;
 			} else {

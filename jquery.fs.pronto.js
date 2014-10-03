@@ -1,5 +1,5 @@
 /* 
- * Pronto v3.1.3 - 2014-09-26 
+ * Pronto v3.1.4 - 2014-10-03 
  * A jQuery plugin for faster page loads. Part of the formstone library. 
  * http://formstone.it/pronto/ 
  * 
@@ -195,7 +195,7 @@
 		var data = e.originalEvent.state;
 
 		if (data) {
-			if (options.modal && visited === 0 && data.url) {
+			if (options.modal && visited === 0 && data.url && !data.initial) {
 				// If opening content in a 'modal', return to original page on reload->back
 				window.location.href = data.url;
 			} else {
