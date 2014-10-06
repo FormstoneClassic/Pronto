@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Test</title>
+		<link rel="stylesheet" href="../components/qunit/qunit/qunit.css">
+		<script src="../components/qunit/qunit/qunit.js"></script>
+
+		<script src="../components/jquery/dist/jquery.min.js"></script>
+
+		<script src="../jquery.fs.pronto.js"></script>
+	</head>
+	<body>
+		<div id="qunit"></div>
+		<div id="qunit-fixture"></div>
+		<script>
+
+			QUnit.test("Get", function( assert ) {
+				assert.ok(true, "'foo' was set to 'bar'");
+			});
+
+/*
+			QUnit.module("Testing");
+
+			QUnit.test("Set", function( assert ) {
+				eraseCookie("foo");
+
+				$.macaroon("foo", "bar");
+
+				var exists = document.cookie.indexOf("foo=bar") > -1;
+				assert.ok(exists, "'foo' was set to 'bar'");
+			});
+
+			QUnit.test("Get", function( assert ) {
+				eraseCookie("foo");
+
+				$.macaroon("foo", "bar");
+
+				var value = $.macaroon("foo");
+				assert.equal(value, "bar", "'foo' is equal to 'bar'");
+			});
+
+			QUnit.test("Erase", function( assert ) {
+				eraseCookie("foo");
+
+				$.macaroon("foo", "bar");
+
+				$.macaroon("foo", null);
+
+				var exists = document.cookie.indexOf("foo=bar") < 0;
+				assert.ok(exists, "'foo' was cleared");
+			});
+
+			// Different method from: http://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript#179514
+			function eraseCookie(name) {
+				var pathParts = location.pathname.split('/'),
+					pathCurrent = ' path=';
+
+				document.cookie = name + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT;';
+
+				for (var i = 0; i < pathParts.length; i++) {
+					pathCurrent += ((pathCurrent.substr(-1) != '/') ? '/' : '') + pathParts[i];
+					document.cookie = name + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT;' + pathCurrent + ';';
+				}
+			}
+*/
+		</script>
+	</body>
+</html>

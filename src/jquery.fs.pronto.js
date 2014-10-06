@@ -24,6 +24,7 @@
 	 * @param tracking.manager [boolean] <false> "Flag for Tag Manager tracking"
 	 * @param tracking.variable [string] <'currentURL'> "Tag Manager dataLayer variable name (macro in Tag Manager)"
 	 * @param tracking.event [string] <'PageView'> "Tag Manager event name (rule in Tag Manager)"
+	 * @param transitionOut [function] <$.noop> "Transition timing callback; should return user defined $.Deferred object, which must eventually resolve"
 	 */
 	var options = {
 		cache: true,
@@ -42,7 +43,8 @@
 			manager: false, // Use tag manager events
 			variable: 'currentURL', // data layer variable name - macro in tag manager
 			event: 'PageView' // event name - rule in tag manager
-		}
+		},
+		transitionOut: $.noop
 	};
 
 	/**
@@ -129,8 +131,15 @@
 			$.extend(true, options, opts || {});
 
 			options.$container = $(options.container);
+
 			if (options.render === $.noop) {
 				options.render = _renderState;
+			}
+
+			if (options.transitionOut === $.noop) {
+				options.transitionOut = function() {
+					return $.Deferred().resolve();
+				};
 			}
 
 			// Capture current url & state
@@ -217,10 +226,16 @@
 		// Fire request event
 		$window.trigger("pronto.request", [ false ]);
 
+		// Get transition out deferred
+		options.transitionOutDeferred = options.transitionOut.apply(window, [ false ]);
+
 		var queryIndex = url.indexOf("?"),
 			hashIndex = url.indexOf("#"),
 			data = (queryIndex > -1) ? _getQueryParams( url.slice( queryIndex + 1 ) ) : {},
-			hash = "";
+			hash = "",
+			requestDeferred = $.Deferred(),
+			error = "User error",
+			response = null;
 
 		if (hashIndex > -1) {
 			hash = (queryIndex > -1) ? url.slice(hashIndex, queryIndex) : url.slice(hashIndex);
@@ -258,27 +273,35 @@
 
 				return xhr;
 			},
-			success: function(response, status, jqXHR) {
-				response  = (typeof response === "string") ? $.parseJSON(response) : response;
+			success: function(resp, status, jqXHR) {
+				response  = (typeof resp === "string") ? $.parseJSON(resp) : resp;
 
 				// handle redirects - requires passing new location with json response
-				if (response.location) {
-					url = response.location;
+				if (resp.location) {
+					url = resp.location;
 				}
 
-				_process(url, hash, response, (options.jump ? 0 : false), true);
+				requestDeferred.resolve();
 			},
-			error: function(jqXHR, status, error) {
-				$window.trigger("pronto.error", [ error ]);
+			error: function(jqXHR, status, err) {
+				error = err;
+
+				requestDeferred.reject();
 
 				// Try to parse response text
 				try {
-					var response = $.parseJSON(jqXHR.responseText);
-					_process(url, hash, response, 0, true);
+					// response = $.parseJSON(jqXHR.responseText);
+					// _process(url, hash, response, 0, true);
 				} catch (e) {
 					// console.error(e);
 				}
 			}
+		});
+
+		$.when(requestDeferred, options.transitionOutDeferred).done(function() {
+			_process(url, hash, response, (options.jump ? 0 : false), true);
+		}).fail(function() {
+			$window.trigger("pronto.error", [ error ]);
 		});
 	}
 

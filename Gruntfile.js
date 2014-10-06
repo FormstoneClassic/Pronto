@@ -1,7 +1,6 @@
 /*global module:false*/
 
 // NO Less
-
 module.exports = function(grunt) {
 
 	grunt.initConfig({
@@ -63,6 +62,13 @@ module.exports = function(grunt) {
 				}
 			}
 		},
+		// QUnit
+		qunit: {
+			options: {
+				timeout: 10000
+			},
+			all: [ 'test/*.html' ]
+		},
 		// jQuery Manifest
 		jquerymanifest: {
 			options: {
@@ -98,12 +104,21 @@ module.exports = function(grunt) {
 		sync: {
 			all: {
 				options: {
-					sync: [ 'name', 'version', 'description', 'author', 'license', 'homepage' ],
+					sync: [ 'name', 'version', 'description', 'author', 'license', 'homepage', 'keywords', 'dependencies' ],
 					overrides: {
 						main: [
 							'<%= pkg.codename %>.js'
 						],
-						ignore: [ "*.jquery.json", "Gruntfile.js", "src/" ]
+						ignore: [
+							"*.jquery.json",
+							"Gruntfile.js",
+							"components/",
+							"src/",
+							"test/"
+						],
+						devDependencies: [
+							'<%= pkg.bowerDevDependencies %>'
+						]
 					}
 				}
 			}
@@ -114,6 +129,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-qunit');
 	grunt.loadNpmTasks('grunt-jquerymanifest');
 	grunt.loadNpmTasks('grunt-banner');
 	grunt.loadNpmTasks('grunt-npm2bower-sync');
@@ -122,7 +138,8 @@ module.exports = function(grunt) {
 	grunt.registerTask('buildReadme', 'Build Formstone README.md file.', function () {
 		var pkg = grunt.file.readJSON('package.json'),
 			destination = "README.md",
-			markdown = '<a href="http://gruntjs.com" target="_blank"><img src="https://cdn.gruntjs.com/builtwith.png" alt="Built with Grunt"></a> \n' +
+			markdown = '<a href="http://gruntjs.com" target="_blank"><img src="https://cdn.gruntjs.com/builtwith.png" alt="Built with Grunt"></a> ' +
+					   '<a href="https://travis-ci.org/Formstone/'+pkg.name+'" target="_blank"><img src="https://travis-ci.org/Formstone/'+pkg.name+'.svg?branch=master" alt=""></a> \n' +
 					   '# ' + pkg.name + ' \n\n' +
 					   pkg.description + ' \n\n' +
 					   '- [Demo](' + pkg.demo + ') \n' +
@@ -134,7 +151,9 @@ module.exports = function(grunt) {
 		grunt.log.writeln('File "' + destination + '" created.');
 	});
 
-	// Default task.
-	grunt.registerTask('default', [ 'jshint', 'copy', 'uglify', 'jquerymanifest', 'usebanner', 'sync', 'buildReadme' ]);
+	// Tasks
+	grunt.registerTask('build', [ 'jshint', 'copy', 'uglify', 'qunit' ]);
+
+	grunt.registerTask('default', [ 'build', 'jquerymanifest', 'usebanner', 'sync', 'buildReadme' ]);
 
 };
