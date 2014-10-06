@@ -7,19 +7,107 @@
 		<script src="../components/qunit/qunit/qunit.js"></script>
 
 		<script src="../components/jquery/dist/jquery.min.js"></script>
+		<script src="../components/jquery-mockjax/jquery.mockjax.js"></script>
 
 		<script src="../jquery.fs.pronto.js"></script>
 	</head>
 	<body>
 		<div id="qunit"></div>
-		<div id="qunit-fixture"></div>
+		<div id="qunit-fixture">
+			<div id="pronto">
+				<p>Old content</p>
+				<a href="page.html">Link</a>
+			</div>
+		</div>
 		<script>
 
+			// Set up
+
+			$.mockjax({
+				url: "page.html",
+				responseText: {
+					"title": "New Page",
+					"content": "<p>New content</p>"
+				}
+			})
+
+			$.mockjax({
+				url: "http://localhost:8888/github/pronto/test/page.html", // mamp
+				responseText: {
+					"title": "New Page",
+					"content": "<p>New content</p>"
+				}
+			});
+
+			$.pronto();
+
+			// Tests
+
+			QUnit.asyncTest("Request Page", function(assert) {
+				expect(1);
+
+				$(window).one("pronto.render", function() {
+					var check = $("#pronto p").text().toLowerCase();
+					assert.equal(check, "new content", "HTML loaded");
+					QUnit.start();
+				});
+
+				$("#pronto a").trigger("click");
+			});
+
+			QUnit.asyncTest("Navigate Back", function(assert) {
+				expect(1);
+
+				$(window).one("pronto.render", function() {
+					var check = $("#pronto p").text().toLowerCase();
+					assert.equal(check, "old content", "HTML reverted");
+					QUnit.start();
+				});
+
+				window.history.back();
+			});
+
+			QUnit.asyncTest("Events", function(assert) {
+				expect(5);
+
+				$(window).one("pronto.request", function() {
+					assert.ok(true, "pronto.request Fired");
+				}).one("pronto.progress", function() {
+					assert.ok(true, "pronto.progress Fired");
+				}).one("pronto.load", function() {
+					assert.ok(true, "pronto.load Fired");
+				}).one("pronto.render", function() {
+					assert.ok(true, "pronto.render Fired");
+
+					$.pronto("load", "error.html");
+				}).one("pronto.error", function() {
+					assert.ok(true, "pronto.error Fired");
+
+					window.history.back();
+
+					QUnit.start();
+				});
+
+				$.pronto("load", "page.html");
+			});
+
+			QUnit.asyncTest("'load' Method", function(assert) {
+				expect(1);
+
+				$(window).one("pronto.render", function() {
+					var check = $("#pronto p").text().toLowerCase();
+					assert.equal(check, "new content", "HTML loaded");
+					QUnit.start();
+				});
+
+				$.pronto("load", "page.html");
+			});
+
+/*
 			QUnit.test("Get", function( assert ) {
 				assert.ok(true, "'foo' was set to 'bar'");
 			});
 
-/*
 			QUnit.module("Testing");
 
 			QUnit.test("Set", function( assert ) {

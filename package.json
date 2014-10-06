@@ -39,6 +39,7 @@
   },
   "bowerDevDependencies": {
     "qunit": "~1.15.0",
-    "jquery": "1.11.1"
+    "jquery": "1.11.1",
+    "jquery-mockjax": "~1.5.4"
   }
 }

@@ -1,3 +1,7 @@
+
+	// Define transitiond deferred
+	var transitionDeferred;
+
 	$(document).ready(function() {
 		// Bind pronto events
 		$(window).on("pronto.request", pageRequested)
@@ -8,34 +12,57 @@
 
 		// Init pronto
 		$.pronto({
-			selector: "a:not(.no-pronto)"
+			selector: "a:not(.no-pronto)",
+			transitionOut: getTransitionOutDeferred
 		});
 
 		// Remember to init first page
 		pageRendered();
 	});
 
+	function getTransitionOutDeferred() {
+		// Reject active deferred
+		if (transitionDeferred) {
+			transitionDeferred.reject();
+		}
+
+		// Create new timing deferred
+		transitionDeferred = $.Deferred();
+
+		// Animate content out
+		$("#pronto").animate({ opacity: 0 }, 500, function() {
+			// Resolve active deferred
+			transitionDeferred.resolve();
+		});
+
+		// Return active deferred
+		return transitionDeferred;
+	}
+
 	function pageRequested(e) {
-		// update state to reflect loading
+		// Update state to reflect loading
 		console.log("Request new page");
 	}
 
 	function pageLoadProgress(e, percent) {
-		// update progress to reflect loading
+		// Update progress to reflect loading
 		console.log("New page load progress", percent);
 	}
 
 	function pageLoaded(e) {
-		// unbind old events and remove plugins
+		// Unbind old events and remove plugins
 		console.log("Destroy old page");
 	}
 
 	function pageRendered(e) {
-		// bind new events and initialize plugins
+		// Bind new events and initialize plugins
 		console.log("Render new page");
+
+		// Animate content in
+		$("#pronto").animate({ opacity: 1 });
 	}
 
 	function pageLoadError(e, error) {
-		// watch for load errors
+		// Watch for load errors
 		console.error("Error loading page", error);
 	}

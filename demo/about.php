@@ -36,6 +36,13 @@
         	<script src="http://formstone.it/js/site.ie9.js"></script>
 		<![endif]-->
 
+		<style>
+			#pronto {
+				-webkit-transition: none;
+						transition: none;
+			}
+		</style>
+
 		<script src="../jquery.fs.pronto.js"></script>
 		<script src="js/main.js"></script>
 	</head>
