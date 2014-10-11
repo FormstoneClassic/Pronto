@@ -21,36 +21,46 @@
 		</div>
 		<script>
 
-			// Set up
+			// Set up mock ajax requests
+
+			var loc = window.location.href.replace("test.html", ""),
+				response = '{"title": "New Page","content": "<p>New content</p>"}';
 
 			$.mockjax({
-				url: "page.html",
-				responseText: {
-					"title": "New Page",
-					"content": "<p>New content</p>"
-				}
-			})
-
-			$.mockjax({
-				url: "http://localhost:8888/GitHub/Pronto/test/page.html", // mamp
-				responseText: {
-					"title": "New Page",
-					"content": "<p>New content</p>"
+				url: "*page.html",
+				responseText: response,
+				responseTime: 1000,
+				headers: {
+					"Content-length": response.length
 				}
 			});
 
+			$.mockjax({
+				url: "*error.html",
+				status: 404
+			});
+
+			// Initialize Pronto
+
 			$.pronto();
+
+			QUnit.testDone(function() {
+				$(window).off("pronto");
+			});
 
 			// Tests
 
 			QUnit.asyncTest("Request Page", function(assert) {
 				expect(1);
 
-				$(window).one("pronto.render", function() {
+				function onRender(e) {
 					var check = $("#pronto p").text().toLowerCase();
 					assert.equal(check, "new content", "HTML loaded");
+
 					QUnit.start();
-				});
+				}
+
+				$(window).on("pronto.render", onRender);
 
 				$("#pronto a").trigger("click");
 			});
@@ -58,100 +68,81 @@
 			QUnit.asyncTest("Navigate Back", function(assert) {
 				expect(1);
 
-				$(window).one("pronto.render", function() {
+				function onRender(e) {
 					var check = $("#pronto p").text().toLowerCase();
 					assert.equal(check, "old content", "HTML reverted");
+
 					QUnit.start();
-				});
+				}
+
+				$(window).on("pronto.render", onRender);
 
 				window.history.back();
-			});
-
-			QUnit.asyncTest("Events", function(assert) {
-				expect(5);
-
-				$(window).one("pronto.request", function() {
-					assert.ok(true, "pronto.request Fired");
-				}).one("pronto.progress", function() {
-					assert.ok(true, "pronto.progress Fired");
-				}).one("pronto.load", function() {
-					assert.ok(true, "pronto.load Fired");
-				}).one("pronto.render", function() {
-					assert.ok(true, "pronto.render Fired");
-
-					$.pronto("load", "error.html");
-				}).one("pronto.error", function() {
-					assert.ok(true, "pronto.error Fired");
-
-					window.history.back();
-
-					QUnit.start();
-				});
-
-				$.pronto("load", "page.html");
 			});
 
 			QUnit.asyncTest("'load' Method", function(assert) {
 				expect(1);
 
-				$(window).one("pronto.render", function() {
+				function onRender(e) {
 					var check = $("#pronto p").text().toLowerCase();
 					assert.equal(check, "new content", "HTML loaded");
+
 					QUnit.start();
-				});
-
-				$.pronto("load", "page.html");
-			});
-
-/*
-			QUnit.test("Get", function( assert ) {
-				assert.ok(true, "'foo' was set to 'bar'");
-			});
-
-			QUnit.module("Testing");
-
-			QUnit.test("Set", function( assert ) {
-				eraseCookie("foo");
-
-				$.macaroon("foo", "bar");
-
-				var exists = document.cookie.indexOf("foo=bar") > -1;
-				assert.ok(exists, "'foo' was set to 'bar'");
-			});
-
-			QUnit.test("Get", function( assert ) {
-				eraseCookie("foo");
-
-				$.macaroon("foo", "bar");
-
-				var value = $.macaroon("foo");
-				assert.equal(value, "bar", "'foo' is equal to 'bar'");
-			});
-
-			QUnit.test("Erase", function( assert ) {
-				eraseCookie("foo");
-
-				$.macaroon("foo", "bar");
-
-				$.macaroon("foo", null);
-
-				var exists = document.cookie.indexOf("foo=bar") < 0;
-				assert.ok(exists, "'foo' was cleared");
-			});
-
-			// Different method from: http://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript#179514
-			function eraseCookie(name) {
-				var pathParts = location.pathname.split('/'),
-					pathCurrent = ' path=';
-
-				document.cookie = name + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT;';
-
-				for (var i = 0; i < pathParts.length; i++) {
-					pathCurrent += ((pathCurrent.substr(-1) != '/') ? '/' : '') + pathParts[i];
-					document.cookie = name + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT;' + pathCurrent + ';';
 				}
-			}
-*/
+
+				$(window).on("pronto.render", onRender);
+
+				$.pronto("load", loc + "page.html");
+			});
+
+			QUnit.asyncTest("Events", function(assert) {
+				function onRequest(e) {
+					assert.ok(true, "pronto.request Fired");
+				}
+
+				function onProgress(e) {
+					assert.ok(true, "pronto.progress Fired");
+				}
+
+				function onLoad(e) {
+					assert.ok(true, "pronto.load Fired");
+				}
+
+				function onRender(e) {
+					// Will assert twice when navigating back
+					assert.ok(true, "pronto.render Fired");
+
+					// Load 404
+					$.pronto("load", loc + "error.html");
+				}
+
+				function onError(e) {
+					assert.ok(true, "pronto.error Fired");
+
+					// Navigate back to reset state (fires second render event)
+					window.history.back();
+
+					QUnit.start();
+				}
+
+				// TODO: Figure out progress events with mockjax...
+				expect(5);
+				/*
+				if (window.navigator.userAgent.match(/PhantomJS/)) {
+					expect(5);
+				} else {
+					expect(6);
+				}
+				*/
+
+				$(window).on("pronto.request", onRequest)
+						 .on("pronto.progress", onProgress)
+						 .on("pronto.load", onLoad)
+						 .on("pronto.render", onRender)
+						 .on("pronto.error", onError);
+
+				$.pronto("load", loc + "page.html");
+			});
 		</script>
 	</body>
 </html>

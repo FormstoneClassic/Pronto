@@ -6,15 +6,15 @@
   "description": "A jQuery plugin for faster page loads. Part of the formstone library.",
   "keywords": [
     "performance",
-	"speed",
-	"ajax",
-	"pushState",
-	"popState",
-	"history",
-	"html5",
-	"javascript",
-  	"jquery",
-  	"formstone"
+    "speed",
+    "ajax",
+    "pushState",
+    "popState",
+    "history",
+    "html5",
+    "javascript",
+    "jquery",
+    "formstone"
   ],
   "repository": {
     "type": "git",

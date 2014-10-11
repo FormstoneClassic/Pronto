@@ -152,8 +152,13 @@ module.exports = function(grunt) {
 	});
 
 	// Tasks
-	grunt.registerTask('build', [ 'jshint', 'copy', 'uglify', 'qunit' ]);
+	grunt.registerTask('build', [ 'jshint', 'copy', 'uglify' ]);
 
-	grunt.registerTask('default', [ 'build', 'jquerymanifest', 'usebanner', 'sync', 'buildReadme' ]);
+	grunt.registerTask('test', [ 'qunit' ]);
+
+	grunt.registerTask('package', [ 'jquerymanifest', 'usebanner', 'sync', 'buildReadme' ]);
+
+	// Default Task
+	grunt.registerTask('default', [ 'build', 'test', 'package' ]);
 
 };
