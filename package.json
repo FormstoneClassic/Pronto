@@ -18,10 +18,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Formstone/Pronto"
+    "url": "https://github.com/FormstoneClassic/Pronto"
   },
-  "homepage": "http://formstone.it/pronto/",
-  "demo": "http://formstone.it/components/Pronto/demo/index.html",
+  "homepage": "http://classic.formstone.it/pronto/",
+  "demo": "http://classic.formstone.it/components/Pronto/demo/index.html",
   "license": "MIT",
   "author": {
     "name": "Ben Plum",

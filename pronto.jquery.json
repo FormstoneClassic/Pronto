@@ -29,9 +29,9 @@
     "jquery",
     "formstone"
   ],
-  "docs": "http://formstone.it/pronto/",
-  "demo": "http://formstone.it/pronto/",
-  "download": "https://github.com/Formstone/Pronto",
-  "bugs": "https://github.com/Formstone/Pronto/issues",
-  "homepage": "http://formstone.it/pronto/"
+  "docs": "http://classic.formstone.it/pronto/",
+  "demo": "http://classic.formstone.it/pronto/",
+  "download": "https://github.com/FormstoneClassic/Pronto",
+  "bugs": "https://github.com/FormstoneClassic/Pronto/issues",
+  "homepage": "http://classic.formstone.it/pronto/"
 }

@@ -134,18 +134,19 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-banner');
 	grunt.loadNpmTasks('grunt-npm2bower-sync');
 
-	// Local tasks
+	// Readme
 	grunt.registerTask('buildReadme', 'Build Formstone README.md file.', function () {
 		var pkg = grunt.file.readJSON('package.json'),
+			extra = grunt.file.exists('src/README.md') ? '\n\n---\n\n' + grunt.file.read('src/README.md') : '';
 			destination = "README.md",
-			markdown = '<a href="http://gruntjs.com" target="_blank"><img src="https://cdn.gruntjs.com/builtwith.png" alt="Built with Grunt"></a> ' +
-					   '<a href="https://travis-ci.org/Formstone/'+pkg.name+'" target="_blank"><img src="https://travis-ci.org/Formstone/'+pkg.name+'.svg?branch=master" alt=""></a> \n' +
+			markdown = '<a href="http://gruntjs.com" target="_blank"><img src="https://cdn.gruntjs.com/builtwith.png" alt="Built with Grunt"></a> \n' +
 					   '# ' + pkg.name + ' \n\n' +
 					   pkg.description + ' \n\n' +
 					   '- [Demo](' + pkg.demo + ') \n' +
 					   '- [Documentation](' + pkg.homepage + ') \n\n' +
 					   '#### Bower Support \n' +
-					   '`bower install ' + pkg.name + '`';
+					   '`bower install ' + pkg.name + '` ' +
+					   extra;
 
 		grunt.file.write(destination, markdown);
 		grunt.log.writeln('File "' + destination + '" created.');
